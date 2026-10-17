@@ -197,6 +197,25 @@ def simple_mat(name, srgb, rough, sheen=0.0, sss=0.0, ior=1.45, coat=0.0, noise_
     nt.links.new(b.outputs['BSDF'], out.inputs['Surface'])
     return m
 
+def pick_device(want='AUTO'):
+    """Use the GPU when there is one: Metal on Apple Silicon, OptiX or CUDA on NVIDIA, HIP on AMD.
+    want='CPU' forces CPU. Prints what it chose."""
+    if want == 'CPU':
+        print('DEVICE CPU (forced)'); return 'CPU'
+    prefs = bpy.context.preferences.addons['cycles'].preferences
+    for kind in ('METAL', 'OPTIX', 'CUDA', 'HIP', 'ONEAPI'):
+        try:
+            prefs.compute_device_type = kind
+            prefs.get_devices()
+        except Exception:
+            continue
+        gpus = [d for d in prefs.devices if d.type == kind]
+        if gpus:
+            for d in prefs.devices:
+                d.use = d.type == kind
+            print('DEVICE', kind, [d.name for d in gpus]); return 'GPU'
+    print('DEVICE CPU (no GPU found)'); return 'CPU'
+
 def ellipsoid(name, loc, size, rot=(0, 0, 0)):
     bpy.ops.mesh.primitive_uv_sphere_add(segments=48, ring_count=24, radius=1.0, location=loc, rotation=rot)
     o = bpy.context.active_object; o.name = name; o.scale = size
@@ -270,7 +289,7 @@ def build(p):
     bg = world.node_tree.nodes.get('Background')
     if bg: bg.inputs['Color'].default_value = (p['world'],) * 3 + (1,)
     # --- render settings
-    sc.render.engine = 'CYCLES'; cy = sc.cycles; cy.device = 'CPU'; cy.samples = p['samples']; cy.use_denoising = p['denoise']
+    sc.render.engine = 'CYCLES'; cy = sc.cycles; cy.device = pick_device(p.get('device', 'AUTO')); cy.samples = p['samples']; cy.use_denoising = p['denoise']
     cy.use_adaptive_sampling = True; cy.adaptive_threshold = 0.02
     if p.get('denoise_accurate'):
         try:

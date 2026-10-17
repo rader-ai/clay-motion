@@ -11,4 +11,4 @@ Scripts from the first measurement and look-tuning pass (research/16). Starting 
 | `clay_test_params_round9.json` | The settings from the last test round |
 | `post_web.py` | Per-pose sensor noise, vignette, and a VP9 web-video round trip so renders are compared with the public clips on equal terms |
 
-Notes: `clay_test_scene.py` needs Blender's Python module (`bpy` 5.2.2) and enables Cycles itself. Values marked [U] in LOOK_DEV.md are still starting points; the test rounds were judged by one model, not the critic panel.
+Notes: `clay_test_scene.py` needs Blender's Python module (`bpy` 5.2.2) and enables Cycles itself. It uses the GPU when it finds one (Metal on Apple Silicon, OptiX or CUDA on NVIDIA) and prints `DEVICE ...` so you can see which; add `"device": "CPU"` to the params file to force CPU. The GPU path was only tested falling back to CPU so far. Values marked [U] in LOOK_DEV.md are still starting points; the test rounds were judged by one model, not the critic panel.
