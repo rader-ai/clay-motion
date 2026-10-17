@@ -1,29 +1,31 @@
-# Clay Studio starter kit
+# Clay Studio
 
-Everything Claude Code needs to build an AI clay stop-motion studio as a plugin, tuned toward the standard of the best clay studios.
+A starter kit for building an AI clay stop-motion studio as a Claude Code plugin: Claude agents as the crew, Blender driven from code as the stage, tuned toward the standard of the best clay studios.
 
-**Status: draft v0.1.** Research on motion, shading and storyboarding is in progress, and an independent review's fixes (in `reviews/`) haven't been applied yet. The next version makes code-driven Blender the primary route, with generative video optional.
+**Status: v0.2 (design).** No code yet. This repo holds the operating model, the design docs, the research, and the prompt that has Claude Code build the rest.
+
+## Start here
+
+1. Read `KICKOFF_PROMPT.md` (setup steps for Chris at the top).
+2. Open Claude Code on Opus 5.5 in this repo and paste the prompt.
 
 ## What's here
 
-| File | What it is |
+| Path | What it is |
 |---|---|
-| `KICKOFF_PROMPT.md` | The prompt to paste into Claude Code (Opus 5.5). Setup steps for you at the top. |
-| `studio/STUDIO_BIBLE.md` | The org: every role, seniority, stages and locks, shot cycle, notes format, communication, accountability. |
-| `studio/CLAUDE_MAPPING.md` | How the org runs in Claude Code: model per role, features, plugin layout, gates enforced by code. |
-| `research/01-studio-craft-standards.md` | What top clay studios actually do: timing, surface, faces, light, failure modes, a draft rubric. |
-| `research/02-generative-video.md` | Video and image models, LoRAs, post tricks, lip sync, agent-drivable tools (Oct 2026). |
-| `research/03-blender-3d-pipeline.md` | The code-driven Blender route: clay shaders, stepped animation, rigs, mouths, miniature camera. |
-| `research/04-eval-harness.md` | How to grade clay automatically without being fooled: code gates, judge panel, human A/B. |
-| `research/05-studio-roles.md` | How real studios staff a production, with seniority and sign-off. |
-| `research/06-production-pipeline.md` | Stages, locks, artifacts, notes culture, statuses, throughput. |
-| `templates/` | Agent file template and a worked Director example. |
-| `reviews/` | Independent reviews of the kit and what they found. |
+| `KICKOFF_PROMPT.md` | The prompt that runs research, spec, spec review, build, calibration, the tune loop, a pilot production, and packaging |
+| `studio/STUDIO_BIBLE.md` | The org: every role, seniority, gates and locks, shot cycle, notes, communication, accountability |
+| `studio/CREATIVE_DIRECTION.md` | Creative direction: real textures, fibers, earthy materials, tied by four layers |
+| `studio/CLAUDE_MAPPING.md` | Model per role, Claude Code features, skills, workflows, production folder |
+| `studio/STORY.md` | Story drafts, thumbnails, boards from Blender, animatic, layout, edit drafts |
+| `studio/DESIGN_AND_WORLD.md` | World and material bible, characters, sets, effects, originality checks |
+| `studio/FABRICATION.md` | Building characters, sets and props in code |
+| `studio/LOOK_DEV.md` | Clay shader, fibers, boil, camera, light, color, post, screen test |
+| `studio/MOTION.md` | Motion style guide, the animation engine, motion QC |
+| `studio/SOUND.md` | Voice, effects, music, mix, audio QA |
+| `studio/ENGINEERING.md` | Repos, Blender pinning, tracker CLI, hooks, compute, review site, tests |
+| `research/01-15` | Fifteen research reports from Oct 17, 2026, with sources |
+| `reviews/` | Independent reviews of the kit |
+| `templates/` | Agent file template and a worked Director example |
 
-## How to start
-
-1. Put this kit in a private repo (`rader-ai/clay-studio`).
-2. Open Claude Code there on Opus 5.5.
-3. Paste the prompt from `KICKOFF_PROMPT.md` (everything below the line).
-
-All research was gathered Oct 17, 2026 by Sonnet research agents. Model versions, prices and licenses move monthly; the prompt tells Claude Code to re-verify them first.
+Research was gathered by Sonnet research agents on Oct 17, 2026. Versions, prices and licenses move monthly; the prompt re-verifies them first.

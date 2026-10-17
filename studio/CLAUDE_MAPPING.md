@@ -1,203 +1,148 @@
 # How the studio runs on Claude
 
-Companion to STUDIO_BIBLE.md. The bible says who does what and what good looks like. This file says how each piece runs inside Claude Code: which model, which feature, which files, and which rules are enforced by code instead of by trust.
-
-Checked against the Claude Code docs on Oct 17, 2026 (subagents, skills, workflows, agent teams, hooks, /goal, plugins, model aliases). Re-check anything marked [verify] before building on it.
+Companion to STUDIO_BIBLE.md (who does what) and ENGINEERING.md (the mechanics). This file says which model each role runs on, which Claude Code feature does which studio job, and which skills and workflows exist. Checked against the Claude Code docs on Oct 17, 2026.
 
 ## The short version
 
-- Chris is the Executive Producer. He greenlights, sets the budget, and signs every lock.
-- The main Claude Code session, running Opus 5.5, is the Producer. It holds the plan, spawns the crew, keeps the tracker, and enforces the budget. It never makes a creative call.
-- Every other role is a subagent with its own model, tools, skills and authority.
-- Makers run on Sonnet 5.5. Department heads and reviewers run on Opus 5.5. Clerical work runs on Haiku 5.5. Anything measurable runs as code. Final taste sits with Chris.
-- Generation models and tools (Veo, Kling, Nano Banana, Blender, ComfyUI) are the studio's equipment, the way cameras and 3D printers are. Crew members operate the equipment. Equipment is never crew.
-- Agents do not share memory. They share files. The production folder is the studio floor: if a decision is not written in the right file, it did not happen.
+- Chris is the Executive Producer. He greenlights, sets budgets, and signs every gate and lock.
+- The main Claude Code session, on Opus 5.5, is the Producer. It plans, staffs, tracks and spends, and never makes a creative call.
+- Every other role is a subagent with its own model, effort, tools and skills.
+- Makers run on Sonnet 5.5; heads, leads, seniors and reviewers on Opus 5.5; clerical work on Haiku 5.5; anything measurable runs as code; final taste sits with Chris.
+- The equipment is Blender 5.2 LTS driven from Python, ffmpeg, Rhubarb Lip Sync, and open-weight voice models for scratch voices. Generative video and image services are not part of the default pipeline. The only outside APIs are the Gemini and OpenAI models on the critic panel.
+- Agents share files, not memory. The production folder is the studio floor: a decision that isn't written in the right file doesn't exist.
 
-## Five rules the whole design rests on
+## Five rules
 
-1. **One owner per deliverable.** Many roles contribute; exactly one is accountable and signs. Real studios work this way (the Director approves shots, the Producer owns schedule), and it stops agents from waiting on each other or overwriting each other.
-2. **Nobody grades their own work.** The maker never approves its own output. Taste calls go to a different agent, and the critic panel mixes model families, because research shows judges favor output from their own family (research/04-eval-harness.md).
-3. **Code enforces what code can measure.** Cadence, flicker, blur, identity drift and lock status are checked by scripts and hooks. A model cannot talk its way past a failed cadence check.
-4. **Seniority is model plus effort plus authority plus review.** A senior role gets a stronger model, more thinking time, the right to approve, and fewer reviews above it. A junior role gets a cheaper model and every output reviewed.
-5. **Taste flows down, evidence flows up.** The Director and Creative Director set intent in writing. QC, critics and continuity report evidence. The Director decides with the evidence in hand. Chris breaks ties.
+1. **One owner per deliverable.** Many roles contribute; one is accountable. This stops agents from waiting on each other or overwriting each other.
+2. **Nobody grades their own work.** Makers never approve their own output, and taste calls go to a cross-family critic panel, because judges favor output from their own model family (research/04).
+3. **Code enforces what code can measure.** Motion QC, cadence, holds, palette, loudness and lock status are checked by scripts behind the tracker CLI and hooks, so no agent can argue past a failed check.
+4. **Seniority is model plus effort plus authority plus review.** Senior roles get stronger models, more thinking time, the right to approve, and fewer reviews above them.
+5. **Taste flows down, evidence flows up.** The Director and Creative Director write intent; QC, critics and continuity report evidence; the Director decides; Chris breaks ties.
 
-## Model and effort per role
+## Models and effort
 
-Effort levels: low, medium, high, xhigh, max. Opus 5.5, Sonnet 5.5 and Haiku 5.5 default to medium.
+| Role | Level | Model | Effort |
+|---|---|---|---|
+| Executive Producer | Studio head | Chris | n/a |
+| Producer (main session) | Head | Opus 5.5 | high |
+| Creative Director | Studio head | Opus 5.5 | high |
+| Director | Head | Opus 5.5 | xhigh |
+| Co-director / Sequence Director | Head | Opus 5.5 | high |
+| Head of Story | Head | Opus 5.5 | high |
+| Writer | Artist (exception) | Opus 5.5 | high |
+| Storyboard Artist | Artist | Sonnet 5.5 | medium |
+| Animatic Editor | Artist | Sonnet 5.5 | medium |
+| Production Designer | Head | Opus 5.5 | high |
+| Visual Development Artist | Artist | Sonnet 5.5 | medium |
+| Character Designer | Artist | Sonnet 5.5 | high |
+| Set and World Designer | Artist | Sonnet 5.5 | medium |
+| Look Development Supervisor | Head | Opus 5.5 | high |
+| Look Development Artist | Artist | Sonnet 5.5 | medium |
+| Head of Fabrication | Head | Opus 5.5 | high |
+| Fabricator / Rigger | Artist | Sonnet 5.5 | medium |
+| Supervising Animator | Head | Opus 5.5 | high |
+| Lead Animator | Lead | Opus 5.5 | high |
+| Senior Animator | Senior | Opus 5.5 | high |
+| Animator | Artist | Sonnet 5.5 | medium |
+| Lip Sync Artist | Artist | Sonnet 5.5 | low |
+| Animation Assistant | Assistant | Haiku 5.5 | low |
+| Director of Photography | Head | Opus 5.5 | high |
+| Camera and Lighting Operator | Artist | Sonnet 5.5 | medium |
+| VFX Supervisor | Head | Opus 5.5 | high |
+| Compositor | Artist | Sonnet 5.5 | medium |
+| Effects Artist | Artist | Sonnet 5.5 | medium |
+| Editor | Head | Opus 5.5 | high |
+| Assistant Editor | Assistant | Haiku 5.5 | low |
+| Sound Supervisor | Head | Opus 5.5 | high |
+| Sound Designer and Dialogue Editor | Artist | Sonnet 5.5 | medium |
+| Script Supervisor (Continuity) | Reviewer (exception) | Sonnet 5.5 | high |
+| Production Coordinator | Assistant | Haiku 5.5 | low |
+| Pipeline TD | Head | Opus 5.5 | xhigh |
+| Animation TD | Senior | Opus 5.5 | high |
+| Researcher | Artist | Sonnet 5.5 | medium |
+| Studio Critic (panel member) | Reviewer | Opus 5.5 | high |
+| Technical QC | Gate | Code | n/a |
 
-| Role | Level | Model | Effort | Why this model |
-|---|---|---|---|---|
-| Executive Producer | Studio head | Chris (human) | n/a | Taste, budget and lock sign-off stay human |
-| Producer (main session) | Head | Opus 5.5 | high | Holds the plan, routes work, judges scope and risk |
-| Creative Director | Studio head | Opus 5.5 | high | Few calls, all high stakes: the house bar across every production |
-| Director | Head | Opus 5.5, or Fable 5.1 if available | xhigh | Owns every creative call; consistency across many shots needs the strongest judgment |
-| Head of Story | Supervisor | Opus 5.5 | high | Story problems are the most expensive to find late |
-| Writer | Senior artist | Opus 5.5 | high | Scripts are short and cheap to generate; audiences forgive rough animation but not a weak story (Adam Elliot, BFI interview) |
-| Storyboard Artist | Artist | Sonnet 5.5 + image model | medium | Volume work with clear specs |
-| Animatic Editor | Artist | Sonnet 5.5 + ffmpeg scripts | medium | Mostly assembly and timing |
-| Production Designer | Head | Opus 5.5 | high | Owns the look; every design passes through |
-| Character Designer | Senior artist | Sonnet 5.5 + image model | high | Model sheets need care but follow a clear spec |
-| Set and Props Designer | Artist | Sonnet 5.5 + image model | medium | Volume work against the style bible |
-| Head of Fabrication | Supervisor | Opus 5.5 | high | Asset consistency is where AI work usually breaks |
-| Fabricator / Rigger | Artist | Sonnet 5.5 | medium to high | Builds reference packs, meshes, rigs, mouth sets |
-| Supervising Animator | Head | Opus 5.5 | high | Performance quality and consistency across shots |
-| Lead Animator | Lead | Sonnet 5.5 | high | First review on a sequence, breaks shots into tasks |
-| Senior Animator (retakes) | Senior | Opus 5.5 | high | Takes shots that failed twice |
-| Animator | Artist | Sonnet 5.5 | medium | Volume: X-sheets, poses, generation runs |
-| Lip Sync Artist | Artist | Sonnet 5.5 + Rhubarb | low | Mostly mechanical once the mouth set exists |
-| Animation Assistant | Assistant | Haiku 5.5 | low | Prep, contact sheets, renaming, file checks |
-| Director of Photography | Head | Opus 5.5 | high | Lens, scale and light logic decide whether it reads as miniature |
-| Camera and Lighting Operator | Artist | Sonnet 5.5 | medium | Executes the DP's setups per shot |
-| VFX Supervisor | Head | Opus 5.5 | high | Owns the post look and frame-level technical quality |
-| Compositor | Artist | Sonnet 5.5 + scripts | medium | Runs the post stack per shot |
-| Editor | Head | Opus 5.5 | high | Pacing and picture lock with the Director |
-| Assistant Editor | Assistant | Haiku 5.5 | low | Conform, versions, edit lists |
-| Sound Supervisor | Head | Sonnet 5.5 | high | Voice, effects, music and mix; most of the craft is in the tools |
-| Script Supervisor (Continuity) | Specialist | Sonnet 5.5 | high | Careful visual comparison across shots |
-| Production Coordinator | Assistant | Haiku 5.5 | low | Tracker updates, note routing, reminders |
-| Pipeline TD | Head | Opus 5.5, or Fable 5.1 for root-cause hunts | xhigh | Builds and fixes the tools; "why does this look fake" is a root-cause problem |
-| Researcher | Artist | Sonnet 5.5 | medium | Fan-out web research |
-| Technical QC | Gate | Scripts, no model | n/a | Pass/fail on measurable signals |
-| Critic Panel | Reviewers | Opus 5.5 + Gemini + one GPT model | n/a | Blind, pairwise, cross-family, advisory |
+**Exceptions and why**
+- **Writer on Opus:** scripts are short and cheap to generate, and story is the one thing that can't be fixed later.
+- **Script Supervisor on Sonnet:** dress manifests, puppet specs and camera data do most of the checking in code; the agent handles the visual comparison of neighbors.
+- **Fable 5.1:** never a default. If Chris approves the spend, the Director or Pipeline TD can switch to `fable` for a hard problem; it may bill to usage credits and needs Claude Code 2.1.257 or later.
+- Pin model versions in agent files once the studio is stable (`claude-opus-5-5`, etc.) and re-run judge calibration whenever a judge model changes.
 
-Notes on models:
-- `fable` resolves to Fable 5.1. It is never the default, may bill to usage credits, and needs Claude Code v2.1.257 or later. Use it only where the table says so, and only if Chris has approved the spend.
-- Pin versions in subagent files once the studio is stable (`claude-opus-5-5`, etc.) so a model update does not silently move the bar. Re-run judge calibration whenever a judge model changes.
-- Cost reality: generation API spend and GPU time will usually dwarf Claude token spend. The Producer tracks both in one ledger.
+## Which feature does which job
 
-## Which Claude Code feature does which studio job
-
-| Studio need | Claude Code feature | How it is used here |
+| Studio need | Claude Code feature | How it's used |
 |---|---|---|
-| A crew member with a job and authority | Subagent (`agents/<role>.md`) | Frontmatter sets `model`, `effort`, `tools`, `skills`, `memory`. Body holds the role definition from the bible. |
-| Craft know-how several roles share | Skill (`skills/<craft>/SKILL.md` + `scripts/`) | Preloaded into roles via the subagent `skills:` field. Scripts referenced with `${CLAUDE_SKILL_DIR}`. |
-| Studio rules every agent follows | `CLAUDE.md` (the studio charter) | Every subagent and teammate loads it: roles, folders, notes format, who can approve what. |
-| Big parallel jobs | Saved workflows (`workflows/*.js`, run as `/dailies`, `/shoot`, `/bakeoff`, `/research-refresh`) | Scripts call `agent()`, `pipeline()`, `parallel()`. Intermediate results stay in script variables instead of flooding the Producer's context. Resumable. |
-| A room that argues (story room, design crit) | Agent team (experimental, `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`) or a workflow with adversarial review | Writer, Head of Story and Director debate and challenge each other. Use teams only in interactive sessions; they do not spawn under `claude -p`. |
-| Hard gates nobody can skip | Hooks + the tracker CLI | See "Gates enforced by code" below. |
-| Keep improving until the bar is met | `/goal` with a printed scorecard | The evaluator only reads the transcript, so the loop must print its scores every round. |
-| Equipment | MCP servers and APIs | Higgsfield MCP (Veo, Kling, Seedance, Wan, FLUX Video, Topaz, Deflicker, generate_3d), fal MCP, ComfyUI MCP, Blender Lab MCP for look-dev, Gemini API for Veo direct. Plain `blender -b -P` for production renders. |
-| Taste that compounds across sessions | Subagent `memory: project` on Director and Creative Director | Each keeps a taste journal: notes that worked, notes that didn't, what Chris approved and rejected. |
-| Packaging and reuse | Plugin `clay-studio` in a rader-ai GitHub marketplace | One install brings every agent, skill, workflow, hook and MCP config to any project. |
-| Overnight work | Scheduled tasks (optional) | Nightly render queue and morning dailies report. |
+| A crew member | Subagent (`agents/<role>.md`) | Frontmatter: `model`, `effort`, `tools` (tool names only), `skills`, `memory`. Body: the role from the bible, written as instructions with reasons. |
+| Studio rules for everyone | The `studio-charter` skill, preloaded into every agent | Plugins can't ship a CLAUDE.md, so the charter (lines of communication, notes format, file rules, who can approve what) is a skill. The `make` skill also writes a short CLAUDE.md into each production repo. |
+| Craft know-how | Skills (`skills/<craft>/SKILL.md` plus scripts) | Preloaded into the roles that use them; bundled files via `${CLAUDE_SKILL_DIR}`. |
+| The tracker | `bin/studio` in the plugin | On the Bash PATH while the plugin is enabled. The only way to change state (ENGINEERING.md section 4). |
+| Big parallel jobs | Saved workflows (`workflows/*.js`, run as `/clay-studio:<name>`) | Fan-outs keep raw output out of the Producer's context and are resumable within a session. |
+| A room that argues | Agent team (experimental, interactive only) or a workflow with adversarial review | Story room, design crit. |
+| Gates | Hooks plus the tracker CLI | ENGINEERING.md section 5. |
+| Keep tuning until the bar is met | `/goal` | Chris pastes the goal line Claude prints; the evaluator only reads the transcript, so every round prints its scorecard. |
+| Taste that compounds | `memory: user` on Director and Creative Director | Persists across production repos (project scope would reset per repo). |
+| Delegation depth | Subagents can spawn subagents up to 3 layers by default | We use 2: Producer to heads and crew; heads to a reviewer or assistant. Crew never spawn. |
+| Overnight work | Scheduled tasks (optional) | Nightly renders and a morning dailies page. |
 
-## Plugin layout
+## Skills
 
+| Skill | Used by | What it carries |
+|---|---|---|
+| `studio-charter` | Everyone | Org rules, lines of communication, notes format, file rules, approvals |
+| `make` | Producer | The entry point: `/clay-studio:make <brief>` runs a production through every lock |
+| `production-tracking` | Producer, Coordinator | Tracker CLI usage, statuses, packets, ledgers, reports |
+| `story-development` | Head of Story, Writer | Loglines to script, table read, story rules for clay |
+| `boards` | Storyboard Artist, Head of Story | SVG symbol library, beat board, Blender board renders, panel JSON, board checks |
+| `animatic-and-edit` | Animatic Editor, Editor, Assistant Editor | ffmpeg and OTIO assembly, timing files, edit drafts, conform |
+| `world-bible` | Production Designer, Set and World Designer | World and material bible template, palette rules, originality check |
+| `character-build` | Character Designer, Head of Fabrication, Fabricator | Silhouettes, maquette, model sheet, code build recipe, mouth sets |
+| `set-build` | Set and World Designer, Fabricator | Greybox, kit modules, dressing tiers, handmade pass, dress manifests |
+| `look-dev` | Look Dev Supervisor and Artist | Clay shader, fibers, other materials, boil, screen test, texture licensing |
+| `camera-and-light` | DP, Operator | Lens and aperture rules, breathing, miniature lighting, flicker policy |
+| `post-and-color` | VFX Supervisor, Compositor, Effects Artist | Post chain order, per-pose noise, show LUT, handmade effects |
+| `animate-shot` | Animators, Lip Sync, Supervising and Lead Animators | Writing `shot.yaml`, the motion style guide, pop-through, reading motion QC |
+| `animation-engine` | Animation TD | Rig, compiler, solver, secondary layers, lip-sync mapper, tests |
+| `clay-qc` | Pipeline TD, Technical QC | Code checks and their validation |
+| `critic-panel` | Studio Critic, Creative Director | Blind pairwise protocol, filmstrips, calibration |
+| `continuity-check` | Script Supervisor | Manifest diffs and neighbor comparison |
+| `dailies` | Director, Editor | Mini-cuts, review protocol, notes format |
+| `sound` | Sound Supervisor, Sound Designer | Voices and consent, effects sourcing, mix targets, audio QA |
+
+## Workflows
+| Workflow | Does |
+|---|---|
+| `research-refresh` | Re-verifies versions, prices and licenses across the research files, with an adversarial second pass |
+| `board-sequence` | Thumbnails, beat board, Blender boards and board checks for a sequence |
+| `screen-test` | Renders a batch of new materials on the screen-test scene and scores them |
+| `shoot-sequence` | For each ready shot: layout, pop-through, final, post, QC, in parallel up to the render budget |
+| `dailies` | For each shot pending review: critics and continuity, then a dailies page and a Director review |
+| `tune` | One round of the R&D loop on the tuning shots (the prompt defines the full loop) |
+
+## Production folder
 ```
-clay-studio/                         (plugin root, its own repo on rader-ai)
-  .claude-plugin/plugin.json         name, version, description
-  .mcp.json                          equipment: higgsfield, fal, comfyui, blender-lab
-  agents/                            one file per role in the bible
-    producer.md  director.md  creative-director.md
-    head-of-story.md  writer.md  storyboard-artist.md  animatic-editor.md
-    production-designer.md  character-designer.md  set-props-designer.md
-    head-of-fabrication.md  fabricator.md
-    supervising-animator.md  lead-animator.md  senior-animator.md  animator.md
-    lip-sync-artist.md  animation-assistant.md
-    director-of-photography.md  camera-lighting-operator.md
-    vfx-supervisor.md  compositor.md  editor.md  assistant-editor.md
-    sound-supervisor.md  script-supervisor.md  production-coordinator.md
-    pipeline-td.md  researcher.md  studio-critic.md
-  skills/
-    clay-studio/        umbrella skill: "/clay-studio:make <brief>" runs the whole pipeline
-    clay-style-bible/   look rules, material vocabulary, ban list
-    stop-motion-timing/ twos, holds, ones on camera moves, X-sheet format
-    xsheet/             exposure sheet spec + phoneme breakdown
-    model-sheet/        turnarounds, expressions, mouth chart, scale lineup
-    storyboard/         panel spec, shot naming, camera notation
-    animatic/           boards + timing + scratch audio
-    keyframe-gen/       clay keyframes with reference packs
-    shot-gen-video/     image-to-video routes, first/last frame, references
-    blender-clay-shot/  bpy scene template, clay shader, stepped animation, mouths, miniature camera
-    clay-post/          on-twos decimation, per-pose boil, grain, flicker, deflicker, upscale
-    lip-sync/           Rhubarb to replacement mouths, held on twos
-    clay-qc/            code metrics and gates
-    critic-panel/       blind pairwise judging protocol
-    continuity-check/   cross-shot consistency
-    dailies/            review protocol and notes format
-    sound/              voice, effects, music, mix
-    edit-conform/       assembly, OTIO, deliverables
-    production-tracking/ tracker CLI, statuses, packets, ledger
-  workflows/
-    dailies.js  shoot-sequence.js  bakeoff.js  research-refresh.js  tune.js
-  hooks/hooks.json
-  scripts/
-    studio            tracker CLI (status, notes, packets, locks, ledger)
-    qc/               cadence, holds, flicker, blur, boil band, identity drift, ghost frames
-    post/             ffmpeg recipes
-    render/           blender headless + cloud GPU fan-out
+<production repo>/
+  CLAUDE.md            short pointer to the studio charter
+  STATUS.md            the Producer's report
+  brief.md  decisions.md  locks.json  ledger.csv  tracker.json   (state files, changed only by `studio`)
+  bible/               world.md (with material bible), palette.yml, scale.yml, colorscript.json, show LUT
+  story/               loglines, beat sheet, treatment, script drafts, table read audio
+  characters/<name>/   puppet.json, model sheet renders, mouth set, character bible
+  sets/<name>/         set brief, kit config, greybox, manifests
+  boards/  animatic/   panels with JSON sidecars, timing.csv, OTIO
+  shots/SQ010_SH020/   shot.json, kickoff.md, shot.yaml, exposures.json, dress_manifest.json,
+                       versions/, qc.json, critics.json, continuity.json, notes.md
+  sound/  edit/  deliver/
+  renders/             gitignored; synced to a bucket if configured
 ```
-
-Production work happens in a separate project repo per film that installs the plugin. The plugin is the studio; each project repo is one production.
-
-## Production folder (the studio floor)
-
-```
-<production>/
-  CLAUDE.md                 production charter (points to the studio charter in the plugin)
-  brief.md                  EP's brief: purpose, audience, length, budget, deadline
-  decisions.md              every decision and waiver, dated, with owner
-  locks.json                which artifacts are locked, who locked them, when
-  ledger.csv                every paid call: date, role, tool, model, units, cost
-  tracker.json              shots and assets, status, owner, version (written only by the tracker CLI)
-  story/                    logline.md, treatment.md, script.md, beat-sheet.md
-  bible/                    production style guide, colour script, scale rules
-  characters/<name>/        model-sheet.png, turnaround, expressions, mouth-chart, refs/, mesh/, rig/
-  sets/<name>/  props/<name>/
-  boards/                   panels per shot
-  animatic/                 versions, timing.csv
-  shots/SQ010_SH020/
-    shot.json               spec: duration, frames, lens, camera move, characters, props, dialogue
-    kickoff.md              Director's brief: intent, acting beats, references, constraints
-    xsheet.csv              frame-by-frame timing, holds, phonemes, camera notes
-    versions/v001.mp4 ...   every version kept
-    qc.json                 code gate results per version
-    critics.json            panel verdicts per version
-    continuity.json         continuity report per version
-    notes.md                all notes, threaded, with status
-  edit/  sound/  deliver/
-```
-
-## Gates enforced by code
-
-Think of the tracker CLI as the only door into an approved state, and the hooks as locks on every other door.
-
-1. **The tracker CLI is the only way to change status.** `studio status set <shot> approved` refuses unless: the latest version has a passing `qc.json`, `critics.json` exists, `continuity.json` has no open blocking issues (or a written Director waiver in `decisions.md`), and the Director's approval note is in `notes.md`.
-2. **PreToolUse hook on Edit|Write** denies direct edits to `tracker.json`, `locks.json`, and any file listed as locked in `locks.json`. Reopening a lock is a Producer action that requires a recorded EP approval.
-3. **PostToolUse hook** on writes into `shots/*/versions/` runs the QC scripts and writes `qc.json`, so no version escapes measurement.
-4. **SubagentStop prompt hook** on maker roles checks that the agent left a handoff note (what changed, which version, open questions). If not, it sends the agent back to write one.
-5. **Budget guard.** Generation scripts append to `ledger.csv` and refuse to run when the production budget would be exceeded. Only the EP can raise it.
 
 ## Handoff packets
 
-Subagents start with no memory of the Producer's conversation. Every spawn therefore gets a packet, generated by `studio packet <shot> <role>`:
-- The role's agent file (automatic)
-- The exact folder path to work in and the version to start from
-- The bible sections and model sheets that apply
-- The open notes addressed to this role, verbatim
-- The definition of done for this task and who reviews it next
-
-If a fact matters to the next person, it goes in a file, not in the packet text alone.
-
-## Retake ladder (seniority in action)
-
-Real studios give the hardest shots to their most senior animators. Here:
-1. v001 and v002: Animator (Sonnet 5.5).
-2. v003: Senior Animator (Opus 5.5, high effort) takes over with all prior notes.
-3. Still failing: the Supervising Animator and DP simplify the shot (restage, crop, change the move, switch route from video generation to Blender or back).
-4. Still failing: the Director and Producer choose redesign, cut, or accept with a written waiver. The decision is logged.
-
-## The tune loop (R&D)
-
-Between productions, the Pipeline TD and Creative Director run R&D on the skill itself, using the eval harness from research/04. The loop runs under `/goal` with a condition that the scorecard itself must prove (see the kickoff prompt for the exact text). Rules:
-- Gates are constraints, not weights. A version that fails a code gate never counts, however well it judges.
-- Tune on 5 to 8 benchmark shots; validate on 10 or more held-out shots the loop never sees.
-- A hidden judge and a hidden slice of the gold set stay out of the loop to catch reward hacking.
-- Chris does a blind A/B check every 5 rounds and at every threshold crossing.
+Every spawn gets a packet from `studio packet <shot> <role>`: the folder and version to start from, the bible sections and model sheets that apply, the open notes for this role verbatim, the definition of done, and who reviews next. Anything the next person needs goes in a file, not only in the packet text. Every agent ends by writing a handoff note (what changed, which version, what's open); a SubagentStop hook checks it exists.
 
 ## What stays human
-
-- Greenlight, budget, and every lock signature (Script, Design, Animatic, Look, Picture, Final).
-- The blind A/B taste panel at Look Lock and Final, with 3 to 5 other people.
-- Optional and recommended: a real clay reference shoot (macro stills and a few seconds of real stop motion), which gives the studio gold references it owns outright.
-- Optional: scratch voices recorded by Chris for the animatic.
+- Greenlight, budgets, and every gate and lock signature.
+- The blind A/B taste checks (Chris alone during the tune loop; Chris plus 3 to 5 others at Studio Bar and at a production's Look Lock and Final).
+- Final voices (human performers, or Chris), unless Chris approves licensed AI voices with disclosure.
+- Commissioning music.
+- Optional: live-action reference for hero shots, a real clay reference shoot, and a real material shoot.

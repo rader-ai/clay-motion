@@ -1,12 +1,13 @@
 ---
 name: <role-slug>
 description: <One or two sentences on when the Producer should delegate to this role. Name the deliverables it owns so delegation is obvious, e.g. "Owns shot kickoffs, notes and shot approval for a production. Use for kickoff briefs, dailies reviews and approve-or-retake decisions.">
-model: <sonnet | opus | haiku | fable | inherit, per studio/CLAUDE_MAPPING.md>
-effort: <low | medium | high | xhigh>
-tools: <least privilege: list only what the role needs>
+model: <one value: sonnet | opus | haiku, per studio/CLAUDE_MAPPING.md>
+effort: <one value: low | medium | high | xhigh>
+tools: <tool names only, least privilege (e.g. Read, Glob, Grep, Bash); command-level limits come from permission rules and hooks>
 skills:
+  - studio-charter
   - <craft skills this role uses, per CLAUDE_MAPPING.md>
-memory: <project, only for roles that keep a taste journal (Director, Creative Director); otherwise omit>
+memory: <user, only for roles that keep a taste journal across productions (Director, Creative Director); otherwise omit>
 ---
 
 # <Role name>
