@@ -1,4 +1,4 @@
-# Clay Studio kickoff prompt (v0.3)
+# Clay Studio kickoff prompt (v0.4)
 
 ## Before you paste (Chris)
 
@@ -6,7 +6,7 @@
 2. Create a private repo for R&D (for example `rader-ai/clay-motion-rnd`). It holds budgets, A/B results and the held-out tests, which shouldn't be public.
 3. Have ready: a dollar cap for R&D (mostly GPU time plus judge API calls) and one for the first production; a Gemini API key and an OpenAI API key for the two non-Claude judges.
 4. Know your render machine: a local NVIDIA GPU, an Apple Silicon Mac, or a rented GPU (RunPod or Modal). The tuning loop needs a GPU.
-5. Read `studio/GOLD_SET.md`. A 1 to 2 hour real clay shoot on your phone is the single biggest thing you can do for quality, because the judges need real clay to compare against.
+5. Read `studio/GOLD_SET.md`. The gold set now starts from openly licensed public clay clips (already cataloged and measured in `gold/`). A 20-minute probe session on your phone (still photos of clay, no animating) is still the best way to settle the clay shader's numbers.
 6. Paste everything below the line. Claude asks questions first, then works through the phases and stops at each gate for your sign-off. When it's time for the long tuning loop, it prints a `/goal` line for you to paste.
 
 ---
@@ -21,7 +21,7 @@ I'm Chris, the **Executive Producer**. I greenlight, set budgets, and sign every
 - `studio/CREATIVE_DIRECTION.md`: my creative direction and decisions (real textures, fibers and earthy materials, tied by four layers: earth pigments, the maker's hand, one place, one fiber; CC0 textures for now).
 - `studio/CLAUDE_MAPPING.md`: model per role, which Claude Code feature does which job, skills, workflows, production folder.
 - The design docs in `studio/`: `STORY.md`, `DESIGN_AND_WORLD.md`, `FABRICATION.md`, `LOOK_DEV.md`, `MOTION.md`, `SOUND.md`, `ENGINEERING.md`, `GOLD_SET.md`.
-- `research/01` to `research/15`: the evidence base, gathered Oct 17, 2026. Strong but dated. Re-verify anything about versions, prices, licenses or APIs before building on it. Numbers marked [U] are starting points, not facts. Items marked [verify] in ENGINEERING.md weren't confirmed in the Claude Code docs.
+- `research/01` to `research/17` and `gold/`: the evidence base, gathered Oct 17, 2026. research/16 is what real public clay footage measures; research/17 is how Laika, Aardman and others work and what that changed in the kit (full sourced reports in `research/studios/`). Strong but dated. Re-verify anything about versions, prices, licenses or APIs before building on it. Numbers marked [U] are starting points, not facts. Items marked [verify] in ENGINEERING.md weren't confirmed in the Claude Code docs.
 - `reviews/`: two independent reviews of this kit and what they found.
 - `templates/`: the agent file template and a worked Director example.
 
@@ -56,7 +56,7 @@ I'm Chris, the **Executive Producer**. I greenlight, set budgets, and sign every
    - Budget caps for R&D and the first production.
    - Render machine for finals and tuning.
    - First production: a 10 to 20 second test film, a 30 to 60 second spot, or a 2 to 3 minute short; purpose and audience in one line; aspect ratio.
-   - Gold references (GOLD_SET.md): will I do the real clay shoot, should you also search for openly licensed clips, and who are my 3 to 5 outside raters.
+   - Gold references (GOLD_SET.md): will I do the 20-minute probe session, and who are my 3 to 5 outside raters. The public clips in `gold/` are the default gold source either way.
    - Review pages: hosted (Vercel or Cloudflare, password-protected) or local files.
    - Voices: my own recordings, open-weight scratch voices only, or a licensed voice service for finals with disclosure.
    - The studio signature fiber in CREATIVE_DIRECTION.md: yes or no, and which fiber.
@@ -65,7 +65,7 @@ I'm Chris, the **Executive Producer**. I greenlight, set budgets, and sign every
 
 ## Phase 1: Research refresh
 
-Run a research refresh with 4 to 6 Sonnet researchers in parallel (as a workflow if that worked in Phase 0): re-verify the Blender 5.2 details marked [U], tool and model versions, licenses, and anything new since Oct 17, 2026, with a second pass that tries to disprove each change. Write only the deltas to `research/16-refresh-<date>.md` with sources, and fix any studio doc that's now wrong.
+Run a research refresh with 4 to 6 Sonnet researchers in parallel (as a workflow if that worked in Phase 0): re-verify the Blender 5.2 details marked [U], tool and model versions, licenses, and anything new since Oct 17, 2026, with a second pass that tries to disprove each change. Write only the deltas to `research/18-refresh-<date>.md` with sources, and fix any studio doc that's now wrong. Also re-run the public-clip measurement (research/16 section 1 has the method) on any new openly licensed clay clips and update `gold/`.
 
 ## Phase 2: Spec
 
@@ -118,9 +118,9 @@ Measurement comes before making, and the engine before content.
 ## Phase 5: R&D worlds, gold set and calibration
 
 1. **Build the two R&D worlds** and their benchmark shots' assets, scratch voices and boards.
-2. **Gold set** (at least 30 items) per GOLD_SET.md, provenance and license logged per item, with the held-out slice in the private repo.
-3. **Known-bad set** (at least 30): our own renders with tells switched on deliberately (smooth interpolated motion, motion blur, no boil or global flicker, waxy subsurface, tilt-shift depth of field, sky lighting, tiled fingerprints, perfect symmetry), controlled degradations of gold clips, and canaries that must always fail.
-4. **Calibrate:** code thresholds from gold-set percentiles; judge validity checks from research/04 (gold beats known-bad at least 90% of the time; order-flip consistency at least 80%; gold against gold near 0.50; degradations caught by code at least 90% and by the panel at least 80%).
+2. **Gold set** (at least 30 items from at least 15 clips) per GOLD_SET.md, starting from `gold/shortlist.md` and `gold/public_catalog.csv`, provenance and license logged per item, with the held-out slice drawn only from catalog clips not used in R&D and kept in the private repo.
+3. **Known-bad set** (at least 30): our own renders with tells switched on deliberately (smooth interpolated motion, motion blur on puppets, no boil or global flicker, noise that changes on held frames, waxy subsurface, a fake tilt-shift gradient, a soft background far blurrier than the subject, sky lighting, tiled fingerprints, Voronoi crease networks, perfect symmetry, over-cleaned faces, an unbalanced orange cast), controlled degradations of gold clips, and canaries that must always fail.
+4. **Calibrate:** code thresholds from gold-set percentiles (research/16 has the starting ranges); judge validity checks from research/04 (gold beats known-bad at least 90% of the time; order-flip consistency at least 80%; gold against gold near 0.50; degradations caught by code at least 90% and by the panel at least 80%).
 5. **Human labels:** at least 60 labeled pairs through the A/B page (me plus my raters); target at least 75% judge agreement with the human majority.
 6. **Gate: Studio Ready.**
 

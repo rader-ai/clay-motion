@@ -10,13 +10,13 @@ Real puppets are kits of parts over an armature: clay, silicone, wool and fabric
 
 From a `puppet.json` spec (proportions, parts, materials, seeds). Recipe (research/09, section a):
 1. **Armature first:** the standard ~25-bone rig scaled to the character's proportions.
-2. **Bulk with lumps:** capsules and ellipsoids along each bone, the way a sculptor bulks out clay. Per-part scale varies plus or minus 3 to 8% and rotation 2 to 4 degrees. Left and right are never mirrors.
+2. **Bulk with lumps:** capsules and ellipsoids along each bone, the way a sculptor bulks out clay. Per-part scale varies plus or minus 3 to 8% and rotation 2 to 4 degrees. Left and right are never mirrors; a deliberate asymmetry pass checks it (Flushed Away's director had modelers spend half a day making each model asymmetrical; research/17 section 5). A mirrored-mesh overlay must show visible mismatch.
 3. **Join like clay:** smooth-union where parts meet (the sculptor's pinch), with a visible seam crease left on at least one joint. Built as SDF fields (Blender 5.x SDF grid nodes, or fogleman/sdf outside Blender, MIT).
 4. **Soften and shape:** SDF mean or median smoothing, offset for bulk, fillet; two scales of low-amplitude noise (part-size lumps, thumb-size softness).
 5. **Mesh:** grid to mesh, then remesh to even topology.
-6. **Hand marks:** dents and thumbprints as real displacement where hands would hold the clay (LOOK_DEV.md 2.1). Faces stay cleaner.
-7. **Materials** from the world's material families via the screen-tested recipes.
-8. **Replacement sets:** mouth set (A to H plus X) from one parametric lip model, each shape frozen with its own seed; brow and lid sets the same way.
+6. **Hand marks:** dents and thumbprints as real displacement where hands would hold or shape the clay, faces included (LOOK_DEV.md 2.1).
+7. **Materials** from the world's material families via the screen-tested recipes, mapped per part the way Aardman builds (research/17 section 5): heads, hands, brows and mouths in the plasticine shader with per-pose boil; bodies and costume in a matte silicone-class shader with prints cast from the sculpt and no boil; eyes and hard props in resin or plastic. A shot that needs big squash and stretch swaps in an all-clay version of the puppet, as Aardman does for Gromit.
+8. **Replacement sets:** 14 mouths by default, up to 24 for a hero speaker (covering Rhubarb's A to H plus X and the extra accents), from one parametric lip model with each shape frozen as its own sculpt; a separate small brow library; eyes and lids stay on the head and move by their own controls. Mouth inserts meet the face with a slightly irregular, hand-blended seam.
 9. **Costume and fibers** built by the Costume and Textile Artist from the fiber recipe (LOOK_DEV.md 2.2), at puppet scale.
 10. **Register the asset:** version, seeds, part list, scale, material families used, license rows for any textures.
 

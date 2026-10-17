@@ -27,10 +27,10 @@ Claude edits `shot.yaml`, never raw keyframes.
 ## 3. Motion style guide v1 (24 fps)
 
 Frame strategy
-1. Bodies on twos: 12 poses a second. (S: Aardman, Isle of Dogs, Selick)
+1. House default: bodies on twos, 12 poses a second (S: Aardman's Vengeance Most Fowl and Dawn of the Nugget, Anderson, Selick). Cadence is authored per pose and per shot, never applied as a filter: threes for slow or stylized beats, ones per rule 2. Laika animates bodies on ones (ParaNorman, one source); a production may choose that in its bible. Real clay measures 9 to 30 new poses per second (research/16).
 2. Ones for camera-move shots, actions shorter than 6 frames, eye and lid work, and fast moves, because twos strobe at speed. (S)
-3. The camera always moves on ones. A character on twos under a camera move gets its poses offset half a step, or goes to ones for that shot, so it doesn't stutter against the camera (Aardman's "one-and-a-half" correction). (S)
-4. One exposure grid per puppet: every part of a puppet changes pose on the same frame, because a real puppet can't update parts independently. The one exception: during dialogue the face (mouth, lids, brows) may run on ones while the body stays on twos, which Laika's face counts suggest [U]. When the face stays on twos, mouth changes snap to the body's grid. The spec decides per character.
+3. The camera always moves on ones. A character on twos under a camera move gets its poses offset half a step, or goes to ones for that shot, so it doesn't stutter against the camera (Aardman's "one-and-a-half" method on Vengeance Most Fowl). (S: research/17 section 2)
+4. One exposure grid per puppet: every part of a puppet changes pose on the same frame, because a real puppet can't update parts independently. By default the face follows the body's grid too (Aardman: no evidence of mouths on ones; Dawn of the Nugget swapped eyes every two frames). For subtle dialogue close-ups the face may run on ones while the body stays on twos (Laika moved faces to every frame from Kubo on). The spec decides per character.
 
 Eyes and face
 5. Blink: 6 frames (2 closing, 1 closed, 3 opening). Fast 5, long 9. At least 2 frames of half-lid. (T)
@@ -42,7 +42,7 @@ Eyes and face
 Timing
 10. Anticipation 4 frames (6 if punchy), action, settle 7. A take: anticipation 4, take 7, settle 7; a punchy take uses a 1-frame pop. (T)
 11. Small overshoot, then return over 6 to 8 frames with shrinking steps. (D)
-12. Never hold for 3 to 5 frames; it reads as a mistake. Minimum hold 6 frames, and only with a moving hold. 12 frames for an expression, 16 to 18 comfortable, 24+ for comedy. (T)
+12. Never hold for 3 to 5 frames; it reads as a mistake. Minimum hold 6 frames, and only with a moving hold. 12 frames for an expression, 16 to 18 comfortable, 24+ for comedy. (T) A true still hold of up to about a second is fine for a comic beat or an insert: real clay sits still about 9% of the time (research/16).
 13. Moving hold: the body drifts along the momentum of the last move, with a breath, eye dart or weight settle every 6 to 12 frames. Never stop everything on the same frame. (D)
 14. Starting durations: gesture 6 to 8, head turn 8 to 12, weight shift 12 to 18, sit or stand 18 to 30. (D)
 
@@ -53,7 +53,7 @@ Spacing
 
 Lip sync
 18. Mouth shapes land 1 frame before the sound. Closed shapes (B, M, P) land on the sound frame or 1 before. Every shape holds at least 2 frames. (T)
-19. 8 to 15 shapes per character. Accent the stressed syllables; skip or merge the rest. Keep the jaw small. (S: Shaun used 15, Isle of Dogs 12 to 14)
+19. Mouths are discrete swaps from a library, never blend shapes: 14 per character by default, up to 24 for a hero speaker (S: Dawn of the Nugget 14 and 24, Early Man more than 24, Isle of Dogs 12 to 14). Brows are a separate small library (Laika splits brow and mouth libraries). Accent the stressed syllables; skip or merge the rest. Keep the jaw small.
 20. A gesture or head move starts 4 to 6 frames before a line. Brow accent on the stressed word. Blink at phrase ends. (T, D)
 
 Locomotion
@@ -64,6 +64,10 @@ Locomotion
 Clay and handmade
 24. Squash and stretch lives in faces, hands and gags: 1 to 2 frames of extreme, volume preserved. Full-body squash breaks the puppet illusion. (D)
 25. Imperfection goes into surface texture (boil, see LOOK_DEV.md) and into step sizes (about plus or minus 10 to 15% on channels the animator "touched"). Never on contacts, eyelines or holds, where noise reads as wobble. (D)
+
+Reference
+26. Hero shots get acted reference (Chris on a phone, or generated), used for timing and key poses and never traced frame by frame. (S: Laika made reference mandatory on Kubo with that warning; Nick Park acts every scene on video)
+27. Poses stay buildable: no squash or stretch where a real armature or cast part couldn't do it, no part that moves on its own between touches. The Lego Movie's rule was that any frame could be frozen and built by hand. (S: research/17 section 10)
 
 ## 4. The animation engine
 
@@ -155,7 +159,7 @@ Computed from Blender data, never pixels. Thresholds scale with character height
 | Ground penetration or float | Fail | 5 mm at human scale, scaled to puppet | Sinking, hovering |
 | Part interpenetration (BVH) | Fail | Above 1% of a part's triangles | Limbs through body |
 | Held-frame change | Fail | Any change on a held exposure | Flicker on holds |
-| Cadence | Fail if unplanned | Hold-length mode 2; unplanned 1s or 3s flagged | Inconsistent stepping |
+| Cadence | Fail if unplanned | Matches the cadence planned in `shot.yaml`; unplanned 1s or 3s flagged; a sequence's poses per second stays inside the measured range of real clay, 9 to 30 (research/16) | Inconsistent stepping, filter-like timing |
 | Spacing evenness | Warning | Step-length variation below 0.1 on moves of 5+ poses | Robotic moves |
 | Ease profile | Warning | No slow-in or slow-out | Mechanical starts and stops |
 | Arc quality | Warning | Sagitta/chord below 2% on big moves | Straight-line paths |

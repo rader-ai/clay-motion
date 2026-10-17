@@ -285,7 +285,7 @@ Each role lists what it owns, where it sits, what it can and can't decide, what 
 ### 4.8 Camera and lighting (LOOK_DEV.md sections 3 and 4)
 
 #### Director of Photography
-- **Owns:** lens, framing, depth of field, light design and light continuity; keeper of miniature truth (true-scale depth of field around f/11 to f/16, small hard sources, motivated practicals, no motion blur, camera moves on ones). Approves layout and light for every shot before its pop-through.
+- **Owns:** lens, framing, depth of field, light design and light continuity; keeper of miniature truth (wide lenses stopped down to f/16 to f/22 with true-scale depth of field, small hard sources, motivated practicals, no motion blur on puppets, camera moves on ones). Approves layout and light for every shot before its pop-through.
 - **Fails when:** cinematic CG lighting, telephoto compression, tilt-shift blur, sky lighting.
 - **Claude setup:** Opus 5.5, high.
 

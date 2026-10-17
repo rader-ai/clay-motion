@@ -12,10 +12,10 @@ Every frame should read as a photograph of a small, handmade world: clay that ho
 Built in code, in true metres (a 20 cm puppet is 0.2 units). Node chain (research/10, section a):
 1. **Coordinates:** object-space texture coordinates, object scale applied. Feature sizes in metres: crumb 0.05 to 0.3 mm, marbling streaks 3 to 8 mm.
 2. **Seeds:** `part_seed` (per part, from a hash of project and part name) drives large-scale variation. `pose_seed` (from the pose index, see 2.4) drives micro detail.
-3. **Color:** base pigment color from the production palette; per-part jitter (hue plus or minus 0.02, saturation 0.05, value 0.04); marbling to a second, related color (hue shift 3 to 6%, factor 0.15 to 0.35) where colors were blended by hand; cavity grime (value times 0.8) in crevices and handled areas.
-4. **Principled BSDF:** metallic 0; roughness 0.48 plus or minus 0.06 from 2 mm noise, minus 0.12 where handled (handling polishes clay), plus 0.05 on ridges; IOR 1.47 [U]; subsurface Random Walk. **Subsurface weight and distance are unsettled:** research/09 suggests weight 0.05 to 0.15, research/10 suggests 0.25 to 0.45 at 0.3 to 0.8 mm. Start at weight 0.25 and scale 0.0004, and settle it by matching against real clay photos (section 7). Without Chris's gold shoot there is nothing real to match, and these stay educated guesses. Sheen weight 0.15, roughness 0.5 (raise to about 0.35 weight for a powdered-sugar matte, which Aardman used on Dawn of the Nugget). Coat 0, except 0.06 on handled patches.
+3. **Color:** base pigment color from the production palette; per-part jitter (hue plus or minus 0.02, saturation 0.05, value 0.04); marbling to a second, related color (hue shift 3 to 6%, factor 0.15 to 0.35) where colors were blended by hand; cavity grime (value times 0.8) in crevices and handled areas; on pale clays, patchy grey-brown handling smudges and sparse dust, regenerated per shot because real heads are wiped or swapped between shots (research/17 section 5).
+4. **Principled BSDF:** metallic 0; roughness 0.48 plus or minus 0.06 from 2 mm noise, minus 0.12 where handled (handling polishes clay), plus 0.05 on ridges; IOR 1.47 [U]; subsurface Random Walk. **Subsurface weight and distance are unsettled:** research/09 suggests weight 0.05 to 0.15, research/10 suggests 0.25 to 0.45 at 0.3 to 0.8 mm. Start at weight 0.25 and scale 0.0004, and settle it by matching against real clay photos (section 7). A test on Oct 17 rendered weights 0.05, 0.25 and 0.45 at that scale: from the front at web resolution they look nearly the same; the difference shows on thin backlit parts (ears, fingers, sheets). So it matters most for backlit close-ups, and the probe session (GOLD_SET.md) settles it. Sheen weight 0.15, roughness 0.5 (raise to about 0.35 weight for a powdered-sugar matte, which Aardman used on Dawn of the Nugget). Coat 0, except 0.06 on handled patches. Skin never clips: at most 0.1% of skin pixels at display white ("only so many ways to light a piece of Plasticine", research/17 section 5).
 5. **Relief at three scales:** meso dents 3 to 15 mm (true displacement, about 0.4 mm deep), tool marks 0.5 to 3 mm, crumb 0.05 to 0.3 mm (bump). Material displacement set to "Displacement and Bump".
-6. **Fingerprints:** flow-field ridges at 0.41 to 0.46 mm spacing (real human averages), partial and overlapping, 1 to 3 per touched part, placed where hands would hold the clay (pinch points, neck, waist, sides and top of the head, shoulders, backs of limbs; faces kept cleaner). Generated as 16-bit height stamps (about 13 texels per mm). **Fade ridge strength by pixel footprint:** at HD a ridge period can be under 2 pixels and will shimmer, so ridges fade toward zero as a pixel approaches about 0.11 mm on the puppet.
+6. **Fingerprints:** flow-field ridges at 0.41 to 0.46 mm spacing (real human averages), partial and overlapping, 1 to 3 per touched part, placed where hands would hold or shape the clay (pinch points, neck, waist, sides and top of the head, shoulders, backs of limbs) and on faces too: brow, forehead and cheeks, where Aardman deliberately keeps them (prints on Gromit's forehead; "leave their thumbprints on the faces"; research/17 section 5). Cast silicone-class parts carry prints from the original sculpt, fixed per puppet. Generated as 16-bit height stamps (about 13 texels per mm). **Fade ridge strength by pixel footprint:** at HD a ridge period can be under 2 pixels and will shimmer, so ridges fade toward zero as a pixel approaches about 0.11 mm on the puppet.
 7. **Seams and tool marks:** 0.1 to 0.3 mm seam lines with a raised lip where parts join; loop-tool grooves, stylus dimples with raised rims, knife cuts with a smeared lip.
 
 The ten CG tells this shader must avoid (research/10 b): too-clean surfaces, fake fingerprints (rings, tiling, wrong spacing), waxy glow, a single sharp highlight, perfect symmetry and bevels, flat color, missing or global boil, wrong scale cues, a sterile surface with no lint or dust, and render artifacts (denoiser smoothing, ridge aliasing, clipped highlights, motion blur).
@@ -49,21 +49,23 @@ Puppets are 1:7 to 1:11 of human scale, so a 2 to 4 mm yarn becomes 0.2 to 0.5 m
 | Rope and twine | 3-strand laid twist, hairy halo | Twist and halo |
 
 ### 2.4 Boil
-Real boil most likely comes from animators re-touching the clay at each pose. That's an inference (research/01 and research/09 mark it unverified), but it gives a clear rule: the surface changes only when the pose changes (research/10, section 5):
+Real boil most likely comes from animators re-touching the clay at each pose. That's an inference (research/01 and research/09 mark it unverified), but it gives a clear rule, now backed by measurement: held frames in real clay footage are exact copies (research/16), so the surface changes only when the pose changes (research/10, section 5). Boil strength is a per-material setting, because studios treat materials differently (research/17 section 5): clay low to moderate, re-seeded per pose; hair and fur behind a flag (Aardman welcomed twitchy hair on Early Man, Anderson wanted fur boil); cast silicone and stiffened fleece zero (Aardman stiffens Shaun's fleece so it doesn't boil). Wind on a held pose is a separate, flagged layer, never boil.
 - `pose_seed` comes from a hash of the quantized pose, never the frame number, so held frames are identical.
 - Re-seed only the region that moved (mask from per-vertex motion between poses).
 - Micro detail under about 3 mm re-seeds; meso detail (3 to 15 mm) stays 70 to 85% the same; silhouette wobble 0.1 to 0.3 mm [U].
 - Hard switch, no crossfade. Draw from a pool of about 6 variants per region so it reads as one pair of hands.
-- Robin Robin kept boil minimal; start low and raise it only if the Director asks.
+- Robin Robin kept boil minimal; start low on clay and raise it only if the Director asks.
 
 ### 2.5 Texture sources
 CC0 only for now (Chris's decision). Poly Haven and ambientCG cover clay, wood, bark, rock and human-scale fabrics, but no plasticine, felt, needle-felt, puppet-gauge knit, raffia, bisque, wax or handmade paper. Use CC0 scans for color breakup and roughness, flattened so baked-in lighting doesn't show; build fine detail procedurally; never show human-scale weave at puppet scale. Every texture gets a row in the license ledger. A real material shoot can replace these later (research/15, section 6 has the capture method).
 
 ## 3. Camera and lens (DP)
-- Sensor 36 mm wide, horizontal fit; lenses 25 to 50 mm (35 default); true-metre focus distance; 7 to 9 aperture blades; **motion blur off**.
-- **Aperture by scale rule:** to match life-size depth of field at f/N on a 1:k miniature, use f/(N times k). That's why real clay films shoot around f/11 to f/16. Default f/11, f/16 for deep wides. Selective shallow focus only when motivated (a macro close-up), never as a tilt-shift gradient across the whole frame.
+- Sensor 36 mm wide, horizontal fit; true-metre focus distance; 7 to 9 aperture blades; **motion blur off**; camera near clip at 1 mm (Blender's 0.1 m default cut straight through a puppet's head in an Oct 17 test close-up).
+- **Lenses are wide, like the real stages:** 20 to 28 mm for mediums and wides (24 mm is Aardman's world lens; Isle of Dogs defaulted to 20 mm), 18 to 35 mm for close-ups (Aardman often used 18 mm close to the puppet). Deep focus in stop motion comes mostly from wide lenses (research/17 section 6).
+- **Aperture:** stop down. Default f/16, up to f/22 on close shots (Were-Rabbit worked at T22). Compute depth of field from true scale; a 35 mm lens at 0.4 m holds only about 8 cm even at f/11. When a hero shot needs more depth than the optics give, render foreground and background at separate focus and composite them, as Isle of Dogs did. Focus pulls and soft backgrounds are allowed as a deliberate choice (Laika leans softer: Coraline's DP valued the large sensor for it). Never a fake tilt-shift gradient added in post; a real lens tilt computed in the camera, as Laika did with tilt-shift lenses on Missing Link, is an optical choice for the DP (research/17 section 6).
+- **Check against real footage:** in public clay clips the center of frame is only about 1.6 times sharper than the edges (research/16). A shot far above about 3 reads as CG.
 - **Focus breathing:** set the lens to f(1+m) and the f-stop to N(1+m), where m = f/(focus distance minus f). 35 mm at 35 cm becomes 38.9 mm. Verify with a bokeh test render [U].
-- Lens character added in post, all subtle enough to notice only when switched off: mild vignette, sub-pixel chromatic aberration, about 1% distortion, a small diffraction blur at f/11 to f/16, Pro-Mist 1/8 equivalent at most.
+- Lens character added in post, all subtle enough to notice only when switched off: mild vignette, sub-pixel chromatic aberration, about 1% distortion, a small diffraction blur at f/16 to f/22, Pro-Mist 1/8 equivalent at most.
 
 ## 4. Light (DP)
 - Small hard sources at true distances: key spot about 3 to 4 cm across (radius 1.5 to 2 cm), 0.8 to 1.2 m away, 3200 K, spot size 25 to 35 degrees, blend 0.15 to 0.3. Fill a wide soft source about 2 stops under the key. Rim a small spot behind. Practical lamps in the set where the story allows.
@@ -71,13 +73,14 @@ CC0 only for now (Chris's decision). Poly Haven and ambientCG cover clay, wood, 
 - Flags, negative fill and gobos (cucoloris breakup, window patterns) as real objects or light-linked textures.
 - Light groups per source so the DP can rebalance in compositing, the way Vengeance Most Fowl and Dawn of the Nugget shot separate exposures.
 - Haze only where a beam is motivated, as bounded volume cards per depth layer, never global fog.
-- Flicker: real productions fight it. Default none. If the Director asks for life, a per-pose gain of 0.3 to 0.8% at most [U], never per frame.
+- Flicker: real productions fight it (Aardman calls consistent exposure "critically important"; Laika's VFX team removes it). Default none on stage lights. If the Director asks for life, a per-pose gain of 0.3 to 0.8% at most [U], never per frame. Our per-pose sensor noise already gives each pose its own organic difference; identical-looking poses read as cloned (research/17 section 7).
+- Fire and candles are the exception: their own light flickers on purpose, deterministic and repeatable (Aardman drove candle flicker from a stepper disc and varied bulbs between 10 and 11 volts, about 10%), on that light only.
 - Calibrate key power on a digital grey card so it reads 0.18; scale power with distance squared.
 
 ## 5. Color (DP and VFX Supervisor)
 - Working space Linear Rec.709; view transform AgX, look none.
 - **One show LUT per production,** built from the production palette and used everywhere: previews, dailies, finals (Isle of Dogs ran one LUT from set to final grade). Stored as OCIO config plus a baked 65-cube `.cube` for ffmpeg.
-- White balance by source type (tungsten 3200 K, LED 5600 K); one WB gain per scene; desaturated gels.
+- White balance to the key's temperature is required, like a camera set for tungsten (3200 K) or LED (5600 K); one WB per scene; desaturated gels. Leaving it off turned the whole Oct 17 test scene orange under a 3200 K key. Leaving a little warmth (balance a few hundred kelvin above the key) matches most real clay footage, which measures warm (research/16).
 - Color script per sequence in JSON (WB, fill hue, LUT strength, accent budget), read by Blender and ffmpeg.
 - Palette compliance is checked on renders (DESIGN_AND_WORLD.md section 4).
 
@@ -85,7 +88,7 @@ CC0 only for now (Chris's decision). Poly Haven and ambientCG cover clay, wood, 
 Order, in scene-linear: denoise, light-group gains, white balance, veiling glare (large bloom, 0.5 to 2%), diffusion glow, lens distortion and dispersion, vignette, diffraction blur, sensor noise, then view transform and LUT.
 - **Sensor noise, not film grain:** signal-dependent noise in scene-linear (sigma = sqrt(a*x + b), starting a = 1/70000, b = (8/70000)^2 [U]), blurred about 0.6 pixels, chroma at 60% of luma. Done in numpy or OIIO.
 - **Per pose, not per frame:** render each unique pose once with its own seed, then hold it for two frames with ffmpeg. Noise and any flicker therefore change only when the pose changes.
-- **Never frame interpolation, never motion blur.**
+- **Never frame interpolation. Never motion blur on puppets or props.** Allowed per element with VFX Supervisor and Director sign-off: background blur in a chase (Aardman shot go-motion backgrounds in The Wrong Trousers and Were-Rabbit), liquids and splashes (Lego Batman's water looked wrong without it), and a smear replacement for one very fast frame (Laika printed triple noses). Lint fails any other blur (research/17 section 8).
 - A tested ffmpeg chain for LUT, glow and vignette is in research/11, section a.
 
 ## 7. The screen test (Look Dev Supervisor)
@@ -112,10 +115,12 @@ Used by the Look Dev Supervisor, DP and the critic panel (research/10 b, 11 c, 1
 1. Ambient or sky lighting instead of small sources.
 2. Depth of field wrong for scale (everything sharp, or toy-shallow tilt-shift).
 3. Clipped or hue-shifted highlights.
-4. Razor sharpness and zero noise.
+4. Zero noise, or the opposite: soft, airbrushed detail (denoiser smoothing, a background far softer than the subject). Real clay footage measures sharp across the frame (research/16).
 5. Too-clean surfaces and shadows.
 6. Uniform, tiled or wrong-scale texture (fingerprints, weave, grain).
 7. Perfect symmetry, straight edges, square alignment.
 8. Waxy or plastic clay.
 9. Motion blur, or noise that changes on held frames.
 10. Over-processing: bloom, grain, flare you notice before you switch them off.
+11. Over-cleaned clay: faces with no prints or lumps at all (Aardman's Chicken Run lesson), or the opposite, an even all-over texture with the same density everywhere.
+12. Regular cell patterns: crease networks or crackle that repeat like leather or a football (seen in an Oct 17 test with Voronoi creases).

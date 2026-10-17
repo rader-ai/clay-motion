@@ -16,7 +16,7 @@ This file holds Chris's creative direction for the studio. The Creative Director
 ## Candidate threads (Chris to choose or combine)
 
 1. **Made from one place.** Everything in a film's world is built from what you'd find in one location (a potting shed, a riverbank, a grandmother's sewing box). The materials tell you where you are.
-2. **The maker's hand shows.** Every material shows how it was made: fingerprints in clay, visible stitches in felt, knife marks in wood, brush strokes on painted skies. The thread is the process.
+2. **The maker's hand shows.** Every material shows how it was made: fingerprints in clay, visible stitches in felt, knife marks in wood, brush strokes on painted skies. The thread is the process. This puts us in the visible-hand school of Aardman, Adam Elliot and Henry Selick (prints left on faces, motion on twos), with Laika's discipline on defects: no flicker, no color drift, no rigs, nothing accidental (research/17 section 1).
 3. **One fiber runs through it.** A literal recurring thread (for example undyed wool yarn) appears in every scene: in costumes, holding sets together, stitched into skies. It can also carry story.
 4. **Earth pigments only.** Every color comes from natural earth pigments (ochres, umbers, siennas, clay greens, charcoal, chalk, with one indigo or madder accent), so clay, cloth and wood share one palette.
 

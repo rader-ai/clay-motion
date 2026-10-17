@@ -85,9 +85,10 @@ Principles from real art departments (research/13, section 1):
 Effects get a material like everything else, and that material comes from the world (research/15, 13):
 - Fire: felt (Robin Robin), wool tufts swapped per pose (The House), cellophane (Memoir of a Snail).
 - Smoke, fog, cloud: cotton wool, cottonwood fluff.
-- Water: cling film over perspex.
+- Water: cling film over perspex; hair gel, wax and Vaseline; splashes animated frame by frame in clear plastic; drops and tears as gel or glycerin beads moved in steps (Aardman, Pinocchio).
 - Snow: felt, paper, popcorn-style blossoms.
-Real studios also use CG for water and fire (Vengeance Most Fowl left water and fog to VFX). Here, a CG effect is allowed only when it is tuned to match the world's handmade material and the Director approves it at the screen test.
+- Explosions and clouds: cotton, hand-built per pose (Pinocchio, The Lego Movie).
+Real studios also use CG for water and fire (Vengeance Most Fowl left water and fog to VFX). Here, a CG effect is allowed only when it is tuned to match the world's handmade material and the Director approves it at the screen test. Two tested habits (research/17 section 9): keep CG water "restrained and rounded" (Aardman found live-action-looking water doesn't work in a stop-motion world) or strip its sideways flow so it moves like a rubber sheet (Pinocchio); and step every simulation at the shot's cadence, because a smooth sim under stepped puppets gives the fake away.
 
 ## 7. Review checks
 
