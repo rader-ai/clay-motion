@@ -29,7 +29,7 @@ This file holds Chris's creative direction for the studio. The Creative Director
 | Palette | Earth pigments only, with at most one accent per film | House rule, every production |
 | Process | The maker's hand shows in every material | House rule, every production |
 | World | Each film picks one place, and every material in it comes from that place | Rule is house-level; the place is chosen per production |
-| Motif | Each film picks one fiber that runs through every scene | Rule is house-level; the fiber is chosen per production |
+| Motif | Each film picks one fiber that appears in every scene (not every frame) | Rule is house-level; the fiber is chosen per production |
 
 Open idea for Chris: a studio signature fiber (for example undyed natural wool) that appears somewhere in every film the studio makes, like a maker's mark.
 

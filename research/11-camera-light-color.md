@@ -15,6 +15,7 @@
 - Layered exposures: Vengeance alternate key and ambient plus a beauty pass; Chicken Run 2 up to 16 exposures per frame; Pinocchio merged passes in comp. CG equivalent: Cycles light groups, summed linearly.
 - Looks: Anderson flat and even; Pinocchio warm key with cool fill, reversed for austerity; Coraline flat real world, high-contrast other world. Ratios unpublished; convention 3:1-4:1 key:fill, rim near key level [U].
 - Falloff (derived): lamp at 0.8 m vs 0.3 m = 2.8 stops. A 25 cm puppet with head 0.40 m and feet 0.60 m from the lamp spans 1.2 stops. A 15 cm fresnel at 1.2 m subtends ~7 deg (soft); a 4 cm micro lens at 1 m ~2 deg. Micro fixtures keep shadow hardness scale-consistent.
+- Atmosphere: haze plus a large source; Vengeance Most Fowl left water and fog to VFX.
 - Flicker (Dragonframe): block daylight, steady mains, no bright clothing, longer exposures (1 s beats 1/100 s), capture blackout, manual-aperture lenses. LED PWM: shutter whole PWM cycles, drivers ~2 kHz+, avoid 5-20% dim levels. Pinocchio moved lateral tracking shots from twos to ones to stop 4K strobing.
 
 ## 3. Lens character

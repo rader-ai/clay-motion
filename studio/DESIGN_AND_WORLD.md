@@ -15,11 +15,11 @@ Every production carries all four (`studio/CREATIVE_DIRECTION.md`):
 | Palette: earth pigments only | 8 to 12 chips, each named for its pigment or dye; one accent with a frame budget | Palette check on renders (section 7) |
 | Process: the maker's hand shows | Allowed marks (thumbprint, tool facet, stitch, brush stroke) and forbidden marks (mold line, print layer, perfect gloss) | Screen test and critic |
 | World: made from one place | The place, and the closed list of materials that would exist there | Material allocation matrix |
-| Motif: one fiber runs through it | Which fiber, where it appears, how often, and the scheduled breaks | Motif log per shot |
+| Motif: one fiber runs through it | Which fiber, where it appears in each scene, and where it's prominent | Motif log per shot |
 
 Optional, pending Chris: a studio signature fiber that appears in every film.
 
-How to keep the thread visible without hammering it (research/15, section 7): carry it through traces of making rather than objects; repeat it at three scales (silhouette, material, mark); cap the motif at roughly a third of frames [U]; schedule one deliberate break per act; keep one constant anchor location.
+How to keep the thread visible without hammering it (research/15, section 7): carry it through traces of making rather than objects; repeat it at three scales (silhouette, material, mark); keep one constant anchor location. The motif fiber appears in every scene (Chris's rule), but not in every frame: prominent in roughly a third of frames [U] and quiet elsewhere. Deliberate breaks belong to the palette accent, not the motif.
 
 ## 3. The world bible
 
@@ -67,13 +67,13 @@ Designing for clay (and for code):
 - Chunky forms and simple silhouettes; big readable eyes and brows; brow-led acting works (Gromit has no mouth).
 - Vary finger lengths (equal fingers read as rakes); give feet some size.
 - Avoid detail that won't hold: busy patterns, text on costumes, thin limbs, tiny jewelry.
-- Every costume material comes from the world's material families.
+- Every costume material comes from the world's material families. The Costume and Textile Artist builds costumes at puppet scale (FABRICATION.md).
 
 ## 5. Sets
 
 Principles from real art departments (research/13, section 1):
 - **Scale comes from the puppet first.** Props scale to the head or body on cartoon proportions. Fix puppet sizes early; Isle of Dogs used three puppet scales for close, medium and distant shots.
-- **Build only what the camera sees.** Each shot gets a frustum cull and wild walls. Shots are sorted into buckets, as Missing Link did: A (full build), B (build plus painted backdrop), C (build plus set extension).
+- **Build only what the camera sees.** Each shot gets a frustum cull and wild walls. Shots are sorted into buckets, an idea taken from Missing Link's previs (research/13); our labels are A (full build), B (build plus painted backdrop), C (build plus set extension).
 - **Layer depth:** foreground, midground, painted background; forced perspective with smaller-scale buildings behind.
 - **Painted cyc skies** with cotton-batting clouds. Haze as bounded cards per depth layer.
 - **Lived-in dressing tells story:** Memoir of a Snail's bedroom fills and empties with the story. Hero props placed from story beats, set dressing by rule, filler scattered with clear paths for the puppets.
@@ -100,4 +100,4 @@ Real studios also use CG for water and fire (Vengeance Most Fowl left water and 
 - Prop density: denser in the focal zone than in the blurred background.
 - Motif: logged per shot against its cap and scheduled breaks.
 
-**Originality:** before Design Lock, every character, set and title is compared against a private do-not-resemble reference set (existing films' frames, used only for this comparison and never sent to third-party services), with embedding similarity plus palette and layout descriptors, and a text pass on names and signage. A human makes the final call. Generation prompts and agent instructions never name real studios, films or characters.
+**Originality:** before Design Lock, every character, set and title is compared against a private do-not-resemble reference set (existing films' frames, kept on Chris's machine, used only for this comparison, embeddings computed locally, never uploaded), with embedding similarity plus palette and layout descriptors, and a text pass on names and signage. Chris checks with counsel before assembling that set. A human makes the final call. Agent and skill text that drives making (style rules, recipes, build instructions) cites research file numbers, never real studio, film or character names.

@@ -2,7 +2,7 @@
 
 A starter kit for building an AI clay stop-motion studio as a Claude Code plugin: Claude agents as the crew, Blender driven from code as the stage, tuned toward the standard of the best clay studios.
 
-**Status: v0.2 (design).** No code yet. This repo holds the operating model, the design docs, the research, and the prompt that has Claude Code build the rest.
+**Status: v0.3 (design).** No code yet. This repo holds the operating model, the design docs, the research, and the prompt that has Claude Code build the rest. Two independent reviews have been applied (see `reviews/`).
 
 ## Start here
 
@@ -24,6 +24,7 @@ A starter kit for building an AI clay stop-motion studio as a Claude Code plugin
 | `studio/MOTION.md` | Motion style guide, the animation engine, motion QC |
 | `studio/SOUND.md` | Voice, effects, music, mix, audio QA |
 | `studio/ENGINEERING.md` | Repos, Blender pinning, tracker CLI, hooks, compute, review site, tests |
+| `studio/GOLD_SET.md` | What the judges compare against, the real clay shoot spec, who rates |
 | `research/01-15` | Fifteen research reports from Oct 17, 2026, with sources |
 | `reviews/` | Independent reviews of the kit |
 | `templates/` | Agent file template and a worked Director example |

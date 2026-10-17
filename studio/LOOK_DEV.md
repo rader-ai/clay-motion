@@ -13,7 +13,7 @@ Built in code, in true metres (a 20 cm puppet is 0.2 units). Node chain (researc
 1. **Coordinates:** object-space texture coordinates, object scale applied. Feature sizes in metres: crumb 0.05 to 0.3 mm, marbling streaks 3 to 8 mm.
 2. **Seeds:** `part_seed` (per part, from a hash of project and part name) drives large-scale variation. `pose_seed` (from the pose index, see 2.4) drives micro detail.
 3. **Color:** base pigment color from the production palette; per-part jitter (hue plus or minus 0.02, saturation 0.05, value 0.04); marbling to a second, related color (hue shift 3 to 6%, factor 0.15 to 0.35) where colors were blended by hand; cavity grime (value times 0.8) in crevices and handled areas.
-4. **Principled BSDF:** metallic 0; roughness 0.48 plus or minus 0.06 from 2 mm noise, minus 0.12 where handled (handling polishes clay), plus 0.05 on ridges; IOR 1.47 [U]; subsurface Random Walk. **Subsurface weight and distance are unsettled:** research/09 suggests weight 0.05 to 0.15, research/10 suggests 0.25 to 0.45 at 0.3 to 0.8 mm. Start at weight 0.25 and scale 0.0004, and settle it with the screen test (section 7). Sheen weight 0.15, roughness 0.5 (raise to about 0.35 weight for a powdered-sugar matte, which Aardman used on Dawn of the Nugget). Coat 0, except 0.06 on handled patches.
+4. **Principled BSDF:** metallic 0; roughness 0.48 plus or minus 0.06 from 2 mm noise, minus 0.12 where handled (handling polishes clay), plus 0.05 on ridges; IOR 1.47 [U]; subsurface Random Walk. **Subsurface weight and distance are unsettled:** research/09 suggests weight 0.05 to 0.15, research/10 suggests 0.25 to 0.45 at 0.3 to 0.8 mm. Start at weight 0.25 and scale 0.0004, and settle it by matching against real clay photos (section 7). Without Chris's gold shoot there is nothing real to match, and these stay educated guesses. Sheen weight 0.15, roughness 0.5 (raise to about 0.35 weight for a powdered-sugar matte, which Aardman used on Dawn of the Nugget). Coat 0, except 0.06 on handled patches.
 5. **Relief at three scales:** meso dents 3 to 15 mm (true displacement, about 0.4 mm deep), tool marks 0.5 to 3 mm, crumb 0.05 to 0.3 mm (bump). Material displacement set to "Displacement and Bump".
 6. **Fingerprints:** flow-field ridges at 0.41 to 0.46 mm spacing (real human averages), partial and overlapping, 1 to 3 per touched part, placed where hands would hold the clay (pinch points, neck, waist, sides and top of the head, shoulders, backs of limbs; faces kept cleaner). Generated as 16-bit height stamps (about 13 texels per mm). **Fade ridge strength by pixel footprint:** at HD a ridge period can be under 2 pixels and will shimmer, so ridges fade toward zero as a pixel approaches about 0.11 mm on the puppet.
 7. **Seams and tool marks:** 0.1 to 0.3 mm seam lines with a raised lip where parts join; loop-tool grooves, stylus dimples with raised rims, knife cuts with a smeared lip.
@@ -49,7 +49,7 @@ Puppets are 1:7 to 1:11 of human scale, so a 2 to 4 mm yarn becomes 0.2 to 0.5 m
 | Rope and twine | 3-strand laid twist, hairy halo | Twist and halo |
 
 ### 2.4 Boil
-The surface changes when the puppet is touched, and only then (research/10, section 5):
+Real boil most likely comes from animators re-touching the clay at each pose. That's an inference (research/01 and research/09 mark it unverified), but it gives a clear rule: the surface changes only when the pose changes (research/10, section 5):
 - `pose_seed` comes from a hash of the quantized pose, never the frame number, so held frames are identical.
 - Re-seed only the region that moved (mask from per-vertex motion between poses).
 - Micro detail under about 3 mm re-seeds; meso detail (3 to 15 mm) stays 70 to 85% the same; silhouette wobble 0.1 to 0.3 mm [U].
@@ -66,7 +66,7 @@ CC0 only for now (Chris's decision). Poly Haven and ambientCG cover clay, wood, 
 - Lens character added in post, all subtle enough to notice only when switched off: mild vignette, sub-pixel chromatic aberration, about 1% distortion, a small diffraction blur at f/11 to f/16, Pro-Mist 1/8 equivalent at most.
 
 ## 4. Light (DP)
-- Small hard sources at true distances: key spot about 1.5 to 2 cm across, 0.8 to 1.2 m away, 3200 K, spot size 25 to 35 degrees, blend 0.15 to 0.3. Fill a wide soft source about 2 stops under the key. Rim a small spot behind. Practical lamps in the set where the story allows.
+- Small hard sources at true distances: key spot about 3 to 4 cm across (radius 1.5 to 2 cm), 0.8 to 1.2 m away, 3200 K, spot size 25 to 35 degrees, blend 0.15 to 0.3. Fill a wide soft source about 2 stops under the key. Rim a small spot behind. Practical lamps in the set where the story allows.
 - No sun lamps, no HDRI skies. Painted cyc backdrops lit like a stage.
 - Flags, negative fill and gobos (cucoloris breakup, window patterns) as real objects or light-linked textures.
 - Light groups per source so the DP can rebalance in compositing, the way Vengeance Most Fowl and Dawn of the Nugget shot separate exposures.
@@ -89,10 +89,10 @@ Order, in scene-linear: denoise, light-group gains, white balance, veiling glare
 - A tested ffmpeg chain for LUT, glow and vignette is in research/11, section a.
 
 ## 7. The screen test (Look Dev Supervisor)
-Laika screen-tests every material on camera before approval. Ours is a fixed Blender scene:
+Laika screen-tests every wardrobe item on camera before approval; we do it for every material. Ours is a fixed Blender scene:
 - Same camera, lens and lights every time; a digital grey card, grey ball, chrome ball and ColorChecker; a hero puppet swatch; a 1, 2 and 3 mm backlit clay sheet; a fingerprint stamp; a millimetre ruler.
 - Every new or changed material renders here before it can be used. It is scored against the material bible checklist (origin, making process, palette, scale, motif, neighbor test, greyscale value, never list) and against the approved baseline.
-- When real reference photos exist (a later material shoot, or Chris's own clay), run the matching procedure in research/10 section c: recreate the photo setup, calibrate on the chart, then optimize base color, roughness, subsurface, sheen and bump with Optuna or CMA-ES against ΔE2000, histogram, power-spectrum and DISTS scores, and validate on a held-out light angle.
+- When real reference photos exist (the probes in Chris's gold shoot, GOLD_SET.md, or a later material shoot), run the matching procedure in research/10 section c: recreate the photo setup, calibrate on the chart, then optimize base color, roughness, subsurface, sheen and bump with Optuna or CMA-ES against ΔE2000, histogram, power-spectrum and DISTS scores, and validate on a held-out light angle.
 
 ## 8. Look regression tests (Pipeline TD with Look Dev)
 - A small set of fixed scenes (screen test, one character turnaround, one set corner, one fiber close-up) re-renders after every shader, light or post change.

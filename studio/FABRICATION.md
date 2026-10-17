@@ -17,7 +17,7 @@ From a `puppet.json` spec (proportions, parts, materials, seeds). Recipe (resear
 6. **Hand marks:** dents and thumbprints as real displacement where hands would hold the clay (LOOK_DEV.md 2.1). Faces stay cleaner.
 7. **Materials** from the world's material families via the screen-tested recipes.
 8. **Replacement sets:** mouth set (A to H plus X) from one parametric lip model, each shape frozen with its own seed; brow and lid sets the same way.
-9. **Costume and fibers** from the fiber recipe (LOOK_DEV.md 2.2), at puppet scale.
+9. **Costume and fibers** built by the Costume and Textile Artist from the fiber recipe (LOOK_DEV.md 2.2), at puppet scale.
 10. **Register the asset:** version, seeds, part list, scale, material families used, license rows for any textures.
 
 Optional: open-weight image-to-3D (TRELLIS.2, MIT, about 24 GB VRAM on a cloud GPU) only for a blockout of an odd prop, and only from our own Blender render or a hand drawing. Procedural builds win for characters: separate parts for rigging, deterministic seeds, registered mouth sets, no baked lighting.

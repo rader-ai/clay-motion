@@ -52,6 +52,7 @@ Deterministic checks run first; the vision critic is a second opinion only (rese
 - Panels timed to scratch voice (SOUND.md), assembled with ffmpeg; the cut held as an OpenTimelineIO timeline.
 - `timing.csv` records frames per shot; at Animatic Lock those become the shot durations in `shot.json`.
 - **Animatic Lock:** the Editor owns it (the Animatic Editor builds it), the Director approves, the EP signs.
+- **Voice Lock** follows: final dialogue is recorded or generated to the locked animatic (SOUND.md). Lip sync and dialogue shots wait for it.
 
 ## 6. Layout
 

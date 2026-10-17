@@ -22,7 +22,7 @@ Comic timing from these models needs many takes and human picking; no benchmark 
 
 ## 3. Lip sync handoff
 
-After Dialogue Lock: Rhubarb 1.14.0 with the dialogue text supplied, JSON out, mapped to the X-sheet with a 1-frame lead and 2-frame minimum hold (MOTION.md section 4.7). WhisperX word timings cross-check it.
+After Voice Lock: Rhubarb 1.14.0 with the dialogue text supplied, JSON out, mapped to the X-sheet with a 1-frame lead and 2-frame minimum hold (MOTION.md section 4.7). WhisperX word timings cross-check it.
 
 ## 4. Sound design and Foley
 
@@ -58,4 +58,6 @@ Runs on every mix and writes `audio_qa.json`:
 
 ## 8. Sign-off
 
-Director (creative), Sound Supervisor (technical), Producer (rights and AI disclosure). **Sound Lock** follows Picture Lock; the EP signs.
+Director (creative), Sound Supervisor (technical), Producer (rights and AI disclosure, consulted before each lock).
+- **Voice Lock** (after Animatic Lock): final dialogue recorded or generated to the animatic, releases and licenses on file. Lip sync can't start before it. The Sound Supervisor owns it, the Director approves, the EP signs.
+- **Sound Lock** (after Picture Lock): effects, music, mix, audio QA, rights manifest checked by the Producer. Same sign-off chain.

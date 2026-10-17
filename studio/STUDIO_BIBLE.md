@@ -1,6 +1,6 @@
 # Clay Studio Bible
 
-How this AI clay studio is organized: every role, what it owns, what good looks like, how work and notes move, and who answers for what. Version 0.2.
+How this AI clay studio is organized: every role, what it owns, what good looks like, how work and notes move, and who answers for what. Version 0.3.
 
 **The studio docs**
 | File | Covers | Owner |
@@ -15,6 +15,7 @@ How this AI clay studio is organized: every role, what it owns, what good looks 
 | `MOTION.md` | Motion style guide, animation engine, motion QC | Supervising Animator, Animation TD |
 | `SOUND.md` | Voice, effects, music, mix, audio QA | Sound Supervisor |
 | `ENGINEERING.md` | Repos, Blender pinning, tracker CLI, hooks, compute, review site, tests | Pipeline TD |
+| `GOLD_SET.md` | What the judges compare against, the real clay shoot spec, raters | Creative Director |
 
 Sources: `research/01` to `research/15`, gathered Oct 17, 2026. Where this bible adds something real studios don't do, it says "our addition" and why. Real stop-motion credit lists, postings and interviews document roles and throughput well but rarely document formal sign-off rules, so the accountability lines here are a design informed by that evidence.
 
@@ -54,7 +55,8 @@ Executive Producer (Chris, human)
     │   └── Look Development Supervisor (materials, screen test)  [our addition]
     │       └── Look Development Artist
     ├── Head of Fabrication
-    │   └── Fabricator / Rigger
+    │   ├── Fabricator / Rigger
+    │   └── Costume and Textile Artist
     ├── Supervising Animator
     │   ├── Lead Animator
     │   │   ├── Senior Animator
@@ -92,7 +94,7 @@ Here, seniority is four things at once:
 | Artist | Sonnet 5.5, medium | Owns assigned work; approves nothing | Lead | Volume work to a clear spec |
 | Assistant | Haiku 5.5, low | None; never delivers final work | Artist or Lead | Prep, contact sheets, renaming, checks |
 
-Deliberate exceptions, with reasons, are listed in CLAUDE_MAPPING.md.
+Lead and Senior levels exist in animation from the start. Other departments add them only when a production is big enough to need them. Deliberate exceptions to the model rule, with reasons, are listed in CLAUDE_MAPPING.md.
 
 **The retake ladder.** Real studios give the hardest shots to their most senior animators (Gromit shots were the hardest on Vengeance Most Fowl). Here, counted in creative rounds (notes of type creative or scope), not versions, so code-QC re-renders don't use up rounds:
 1. Rounds 1 and 2: the Animator.
@@ -130,7 +132,7 @@ Each role lists what it owns, where it sits, what it can and can't decide, what 
 
 #### Producer (main Claude Code session)
 - **Owns:** plan, schedule, budget and ledgers, tracker, staffing (which agent, which model), handoff packets, gate logistics, risk log, the EP's status report. Covers what a line producer would do, with the Coordinator.
-- **Decides:** order of work, who does it, spend within budget, when to stop a loop, which shots go to which bucket or route (with the DP and Supervising Animator), omit proposals (Director agrees on creative impact).
+- **Decides:** order of work, who does it, spend within budget, when to stop a loop, which bucket each shot goes in (with the DP and Supervising Animator), omit proposals (Director agrees on creative impact).
 - **Cannot:** approve or reject creative work, change a locked artifact, or commit the EP to anything over budget.
 - **Good looks like:** no agent waits on an input that exists; nothing gets a final render before its pop-through is approved; the ledger matches reality; the EP gets a one-screen status. Laika's producer re-sequenced shots when puppets ran late; ours re-sequences when assets aren't approved.
 - **Fails when:** shots outrun their assets (Missing Link's units ran ahead of puppet readiness); it does creative work itself; its context fills with raw output instead of files and workflows.
@@ -172,7 +174,7 @@ Each role lists what it owns, where it sits, what it can and can't decide, what 
 - **Sits:** reports to the EP; peer of the Producer. Takes notes only from the EP. Takes evidence from QC, critics, continuity and the Creative Director.
 - **Gives notes to:** department heads, and directly to animators at kickoff and dailies (del Toro briefed animators like actors; Nick Park acted shots out on video).
 - **Decides:** approve or retake every shot; design and performance choices; continuity waivers; the cut, with the Editor.
-- **Cannot:** spend, change the schedule, or make the work. The Director judges; makers make.
+- **Cannot:** spend, change the schedule, or make the work. The Director judges the work and leaves the making to the crew.
 - **Good looks like:** kickoffs with a one-line intent, acting beats with frame ranges, references and a do-not-change list; specific, frame-tied notes marked must, should or could; judging shots inside 3 to 5 shot mini-cuts; one animator kept on a sequence where possible; few reshoots after approval.
 - **Fails when:** vague notes; changing its mind after approval (that's a scope change, logged and costed); approving because metrics passed although the shot feels dead; tolerating slow drift.
 - **Claude setup:** Opus 5.5, xhigh, `memory: user` (taste journal). Writes only through `studio` (kickoff, note, decide, status).
@@ -244,6 +246,12 @@ Each role lists what it owns, where it sits, what it can and can't decide, what 
 #### Fabricator / Rigger
 - **Owns:** building assets to spec: puppets from lumps on the standard rig, mouth and brow sets, kit modules, dressing, manifests.
 - **Claude setup:** Sonnet 5.5, medium.
+
+#### Costume and Textile Artist
+- **Why:** fiber is one of the four house layers, and real studios treat costume as its own craft (Laika has a Head of Costume and knits puppet gloves on hair-thin needles so the weave reads at puppet scale).
+- **Owns:** every puppet costume and every textile in sets and props, built at puppet scale with the fiber recipes (LOOK_DEV.md 2.2), and the production's motif fiber.
+- **Good looks like:** weave, knit and fuzz at the right scale for a 15 to 25 cm puppet; costumes that move with the rig without intersecting; textiles that pass the screen test.
+- **Claude setup:** Sonnet 5.5, high. Consults the Look Development Supervisor.
 
 ### 4.7 Animation (MOTION.md)
 
@@ -325,7 +333,7 @@ Each role lists what it owns, where it sits, what it can and can't decide, what 
 - **Claude setup:** Sonnet 5.5, high (exception: a reviewer on Sonnet, because the manifests do most of the checking).
 
 #### Critic Panel
-- **Owns:** blind, pairwise judgments of each version against gold references, from three model families: a Studio Critic agent (Claude), Gemini and one OpenAI model. Each judges in both orders; a win only counts if it survives the swap (research/04). Gemini's votes count only on performance and pacing, because it samples video at about 1 frame per second.
+- **Owns:** blind, pairwise judgments of each version against gold references (GOLD_SET.md), from three model families: a Studio Critic agent (Claude), Gemini and one OpenAI model. Each judges in both orders; a win only counts if it survives the swap (research/04). Six dimensions: clay surface, sculpt and character craft, lighting and miniature depth, set and prop scale, pose and performance, handmade cues. Gemini's votes count only on pose and performance, because it samples video at about 1 frame per second and can't see surface detail or holds.
 - **Can block:** nothing in normal production. Its scores are thresholds only at Look Lock, Studio Bar and in the tune loop.
 
 ---
@@ -339,22 +347,29 @@ A lock means downstream work can build on it. Changing a locked artifact needs a
 |---|---|---|---|---|
 | Spec Lock | The studio's spec is reviewed and revised | Producer | Pipeline TD, Creative Director | EP |
 | Studio Ready | Tools built, tests pass, gold and known-bad sets assembled, judges calibrated | Pipeline TD | Creative Director | EP |
-| Studio Bar | The tune loop meets the bar on held-out benchmark shots and in Chris's blind A/B | Creative Director | Pipeline TD | EP |
+| Studio Bar | The tune loop meets the bar on held-out benchmark shots, and 3 to 5 outside raters can't reliably tell it from gold | Creative Director | Pipeline TD | EP |
 
 ### 5.2 Production locks (every production)
 | # | Lock | Main outputs | Owner | Approves | Signs |
 |---|---|---|---|---|---|
 | 1 | Script Lock | Script, beat sheet, table read, feasibility check | Head of Story | Director | EP |
 | 2 | Design Lock | World bible with material bible, maquettes and model sheets, set designs and buckets, color script, screen-tested materials, originality check | Production Designer | Director | EP |
-| 3 | Animatic Lock | Boards, animatic with voice, shot list with IDs and frame durations | Editor | Director | EP |
-| 4 | Look Lock | One test shot from this production through the whole pipeline, meeting the studio bar | Director | Creative Director concurs | EP |
-| 5 | Picture Lock | Final cut | Editor | Director | EP |
-| 6 | Sound Lock | Final voices, effects, music, mix, audio QA | Sound Supervisor | Director | EP |
-| 7 | Final | Masters, deliverables, delivery QC, rights manifest | Producer | Director | EP |
+| 3 | Animatic Lock | Boards, animatic with scratch voice, shot list with IDs and frame durations | Editor | Director | EP |
+| 4 | Voice Lock | Final dialogue recorded or generated to the animatic, releases and licenses on file; lip sync can start | Sound Supervisor | Director | EP |
+| 5 | Look Lock | One test shot from this production through the whole pipeline, meeting the studio bar | Director | Creative Director concurs | EP |
+| 6 | Picture Lock | Final cut | Editor | Director | EP |
+| 7 | Sound Lock | Effects, music, mix, audio QA, rights manifest checked by the Producer | Sound Supervisor | Director | EP |
+| 8 | Final | Masters, deliverables, delivery QC, outside-rater screening if planned | Producer | Director | EP |
 
-Per-asset approvals (Head of Fabrication's assets) and per-shot approvals (the Director) happen between locks and need no EP signature.
+Per-asset approvals (Head of Fabrication's assets) and per-shot approvals (the Director) happen between locks and need no EP signature. Look Lock's test shot is the only production shot made before Look Lock.
 
-**Look Lock evidence:** the test shot passes every code gate; the critic panel's win rate against gold meets the studio bar thresholds (stored in `STYLE_BIBLE.md`, starting from research/04: at least 0.40 overall and 0.35 per dimension, where 0.50 means indistinguishable); Chris's blind A/B meets its threshold; the Creative Director concurs. These thresholds are proposals to validate, not industry standards.
+**Studio Bar evidence:** on the held-out benchmark shots, every code gate passes; the critic panel's win rate against gold is at least 0.40 overall and 0.35 on every dimension (0.50 means indistinguishable), with at least 2 of the 3 judge families meeting that on their own; the hidden judge agrees within 0.05; 3 to 5 outside raters score at least 0.40 against gold; the Creative Director concurs. The report states which gold set was used (GOLD_SET.md). These thresholds are proposals to validate, not industry standards.
+
+**Look Lock evidence:** the same checks on one test shot from the production, with Chris's A/B (plus outside raters when available) in place of the full panel of raters.
+
+The CLI refuses production kickoffs before Look Lock, and refuses lip sync on dialogue shots before Voice Lock.
+
+**Production locks in short:** Script, Design, Animatic, Voice, Look, Picture, Sound, Final.
 
 **After every production:** a retro (Creative Director with the Pipeline TD and heads) folds lessons into the skills, style bible and rubric, and bumps the studio version.
 
@@ -375,10 +390,10 @@ Per-asset approvals (Head of Fabrication's assets) and per-shot approvals (the D
 | `hld` | On hold |
 | `omt` | Omitted |
 
-1. **Kickoff.** The Director writes the kickoff (Supervising Animator and DP consulted): intent, acting beats with frames, references, do-not-change list, bucket, render budget. For hero shots, Chris can record a live-action reference.
+1. **Kickoff.** The Director writes the kickoff (Supervising Animator and DP consulted): intent, acting beats with frames, references, do-not-change list, bucket and render budget. For hero shots, Chris can record a live-action reference.
 2. **Layout.** `build_shot(shot.json)` builds the shot from its board; the DP and Operator refine camera and light; the DP approves.
 3. **Beat sheet.** The Animator writes `shot.yaml`; the Lip Sync Artist adds mouth timing.
-4. **Pop-through.** Key poses rendered fast as a filmstrip and stepped playblast (MOTION.md section 5). Lead Animator reviews; Supervising Animator approves (Director on hero shots); recorded with `studio pop approve`. No final render before this.
+4. **Pop-through.** Key poses rendered fast as a filmstrip and stepped playblast (MOTION.md section 5). The Lead Animator reviews and notes; the Supervising Animator approves (the Director on hero shots); recorded with `studio pop approve`. No final render before this.
 5. **Final.** Compiled exposures, rendered per unique pose at dailies quality.
 6. **Post.** The Compositor runs the post chain.
 7. **QC.** `studio version add` runs code QC and writes `qc.json`. A fail goes straight back to step 5 or 6 and doesn't count as a creative round.
@@ -420,7 +435,7 @@ Rules: notes live in files, never only in chat. The artist fills `restated` befo
 
 **Lines.** The EP talks to the Director and Producer only. The Director talks to department heads, and to animators at kickoff and dailies. Heads talk to their crews, and to each other for consults (DP, Production Designer and VFX Supervisor on tiering; Head of Fabrication and Supervising Animator on asset function; Look Dev Supervisor and DP on materials under light). Artists take notes only from their review chain and the Director. QC, critics and continuity write reports and talk to no one.
 
-**Files decide; messages coordinate.** A decision exists only once it's in a file. Agents start with no memory of the Producer's conversation, so every spawn gets a packet (`studio packet`), and every agent ends with a handoff note.
+**Decisions live in files.** A decision only counts once it's written through `studio`; messages between agents are for coordination. Agents start with no memory of the Producer's conversation, so every spawn gets a packet (`studio packet`), and every agent ends with a handoff note.
 
 **Rituals**
 | Ritual | When | Who | Output |
@@ -459,7 +474,8 @@ R = does the work, A = accountable owner (exactly one), C = consulted, I = infor
 | Final shot | I | A | I | I | I | I | C | C | R | R | R | C | I | C | I |
 | Continuity report | I | I | I | I | I | I | I | I | I | I | I | I | I | A/R | I |
 | Picture Lock | C | C | I | I | C | I | I | I | I | I | I | A/R | C | I | I |
-| Sound Lock | C | C | I | I | I | I | I | I | I | I | I | C | A/R | I | I |
+| Voice Lock | C | C | C | I | C | I | I | I | C | I | I | C | A/R | I | I |
+| Sound Lock | C | C | C | I | I | I | I | I | I | I | I | C | A/R | I | I |
 | Delivery | C | C | A/R | I | I | I | I | I | I | I | C | R | R | I | C |
 | Budget and schedule | C | C | A/R | I | I | I | I | I | I | I | I | I | I | I | I |
 | House style and gold set | C | C | I | A/R | I | C | C | I | I | I | I | I | I | I | C |
@@ -508,7 +524,7 @@ Every retake is tagged and reviewed after each batch. From animation practice (C
 
 Small studios compress roles (Aardman's Frubes spot ran on 6 people). A production spawns only the agents it needs.
 
-**30 to 60 second spot (about 16 agents):** EP (Chris), Producer, Director (also Head of Story), Writer, Production Designer (also visual development, set and world design), Look Dev Supervisor, Character Designer, Head of Fabrication (also fabricator), Supervising Animator, 2 Animators (Senior on call), DP (also operator), VFX Supervisor (also compositor and effects), Editor (also animatic and assistant editor), Sound Supervisor (also sound designer), Script Supervisor, Coordinator, plus the Pipeline TD and Animation TD on call, QC code and the Critic Panel.
+**30 to 60 second spot (about 17 agents):** EP (Chris), Producer, Director (also Head of Story), Writer, Production Designer (also visual development, set and world design), Look Dev Supervisor, Character Designer, Head of Fabrication (also fabricator), Costume and Textile Artist, Supervising Animator, 2 Animators (Senior on call), DP (also operator), VFX Supervisor (also compositor and effects), Editor (also animatic and assistant editor), Sound Supervisor (also sound designer), Script Supervisor, Coordinator, plus the Pipeline TD and Animation TD on call, QC code and the Critic Panel.
 
 **2 to 3 minute short:** the full roster, with a Lead Animator per sequence and a Sequence Director past about 40 shots.
 

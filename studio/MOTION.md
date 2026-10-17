@@ -30,7 +30,7 @@ Frame strategy
 1. Bodies on twos: 12 poses a second. (S: Aardman, Isle of Dogs, Selick)
 2. Ones for camera-move shots, actions shorter than 6 frames, eye and lid work, and fast moves, because twos strobe at speed. (S)
 3. The camera always moves on ones. A character on twos under a camera move gets its poses offset half a step, or goes to ones for that shot, so it doesn't stutter against the camera (Aardman's "one-and-a-half" correction). (S)
-4. One exposure grid per puppet: every part of a puppet changes pose on the same frame, because a real puppet can't update parts independently. Faces may run on ones during dialogue while the body runs on twos (Laika practice suggests this; [U]).
+4. One exposure grid per puppet: every part of a puppet changes pose on the same frame, because a real puppet can't update parts independently. The one exception: during dialogue the face (mouth, lids, brows) may run on ones while the body stays on twos, which Laika's face counts suggest [U]. When the face stays on twos, mouth changes snap to the body's grid. The spec decides per character.
 
 Eyes and face
 5. Blink: 6 frames (2 closing, 1 closed, 3 opening). Fast 5, long 9. At least 2 frames of half-lid. (T)
@@ -43,7 +43,7 @@ Timing
 10. Anticipation 4 frames (6 if punchy), action, settle 7. A take: anticipation 4, take 7, settle 7; a punchy take uses a 1-frame pop. (T)
 11. Small overshoot, then return over 6 to 8 frames with shrinking steps. (D)
 12. Never hold for 3 to 5 frames; it reads as a mistake. Minimum hold 6 frames, and only with a moving hold. 12 frames for an expression, 16 to 18 comfortable, 24+ for comedy. (T)
-13. Moving hold: the body drifts along the momentum of the last move, with a breath, eye dart or weight settle every 6 to 12 frames. Never stop everything on the same frame. (S: Laika "drift", D on numbers)
+13. Moving hold: the body drifts along the momentum of the last move, with a breath, eye dart or weight settle every 6 to 12 frames. Never stop everything on the same frame. (D)
 14. Starting durations: gesture 6 to 8, head turn 8 to 12, weight shift 12 to 18, sit or stand 18 to 30. (D)
 
 Spacing
@@ -121,7 +121,7 @@ seed: 4112
 Seeded additive layers summed before sampling: blinks and eye darts per the style guide, breathing (3 to 4 second cycle, low amplitude), idle weight shifts, settles after moves. Masked out during emphatic acting. Seed from shot, channel and take.
 
 ### 4.7 Lip sync
-Rhubarb 1.14.0 CLI with the dialogue text supplied, JSON output. `frame = round(t * fps) - 1`, minimum hold 2 frames, cues shorter than an exposure merged, keyed CONSTANT on the mouth slot. Brow accents and blinks come from transcript tags Claude adds (emotion and beat labels), converted by rules.
+Rhubarb 1.14.0 CLI with the dialogue text supplied, JSON output, run only after Voice Lock. `frame = round(t * fps) - 1` (a 1-frame lead), minimum hold 2 frames, cues shorter than an exposure merged, snapped to the body's grid when the face runs on twos, keyed CONSTANT on the mouth slot. Brow accents and blinks come from transcript tags Claude adds (emotion and beat labels), converted by rules.
 
 ### 4.8 Camera
 A motion-control style rig (dolly, pan, tilt, boom) with S-curve eases, sampled on ones. Optional seeded low-frequency shake, off by default; miniature moco is clean.
@@ -143,7 +143,7 @@ Claude Code reads images, not video, so filmstrips are the visual review format.
 
 ## 5. Pop-through first
 
-The pop-through is the cheap preview approved before any final render (research/06): key poses only, rendered fast (Workbench or low-sample Cycles), shown as a filmstrip plus a stepped playblast. The Lead Animator reviews it, the Supervising Animator approves it (the Director on hero shots), and the tracker CLI refuses a final render until it's approved.
+The pop-through is the cheap preview approved before any final render (research/06): key poses only, rendered fast (Workbench or low-sample Cycles), shown as a filmstrip plus a stepped playblast. The Lead Animator reviews it and gives notes, the Supervising Animator approves it (the Director on hero shots), and the tracker CLI refuses a final render until it's approved.
 
 ## 6. Motion QC
 
@@ -187,4 +187,4 @@ Learned motion-quality metrics from the research (MotionCritic, PP-Motion, Human
 - The real quality ceiling is the clay look and the mouth and eye sets, not the timing code.
 - Irregularity can read as jitter. Tune it on approved shots, never by eye on one shot.
 - Blender API churn (5.0 slotted actions, 5.2 modifier inputs): all keying goes through one adapter module.
-- Vision critics miss motion faults. Numbers gate; pictures advise; Chris spot-checks.
+- Vision critics miss motion faults, so the numeric checks are the gates, the filmstrip critic only advises, and Chris spot-checks.

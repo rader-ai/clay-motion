@@ -1,6 +1,6 @@
 # How the studio runs on Claude
 
-Companion to STUDIO_BIBLE.md (who does what) and ENGINEERING.md (the mechanics). This file says which model each role runs on, which Claude Code feature does which studio job, and which skills and workflows exist. Checked against the Claude Code docs on Oct 17, 2026.
+Companion to STUDIO_BIBLE.md (who does what), ENGINEERING.md (the mechanics) and GOLD_SET.md (what the judges compare against). This file says which model each role runs on, which Claude Code feature does which studio job, and which skills and workflows exist. Checked against the Claude Code docs on Oct 17, 2026.
 
 ## The short version
 
@@ -9,7 +9,7 @@ Companion to STUDIO_BIBLE.md (who does what) and ENGINEERING.md (the mechanics).
 - Every other role is a subagent with its own model, effort, tools and skills.
 - Makers run on Sonnet 5.5; heads, leads, seniors and reviewers on Opus 5.5; clerical work on Haiku 5.5; anything measurable runs as code; final taste sits with Chris.
 - The equipment is Blender 5.2 LTS driven from Python, ffmpeg, Rhubarb Lip Sync, and open-weight voice models for scratch voices. Generative video and image services are not part of the default pipeline. The only outside APIs are the Gemini and OpenAI models on the critic panel.
-- Agents share files, not memory. The production folder is the studio floor: a decision that isn't written in the right file doesn't exist.
+- Agents don't share memory, so everything they need to hand on goes into files in the production repo, and a decision only counts once it's recorded there.
 
 ## Five rules
 
@@ -17,7 +17,7 @@ Companion to STUDIO_BIBLE.md (who does what) and ENGINEERING.md (the mechanics).
 2. **Nobody grades their own work.** Makers never approve their own output, and taste calls go to a cross-family critic panel, because judges favor output from their own model family (research/04).
 3. **Code enforces what code can measure.** Motion QC, cadence, holds, palette, loudness and lock status are checked by scripts behind the tracker CLI and hooks, so no agent can argue past a failed check.
 4. **Seniority is model plus effort plus authority plus review.** Senior roles get stronger models, more thinking time, the right to approve, and fewer reviews above them.
-5. **Taste flows down, evidence flows up.** The Director and Creative Director write intent; QC, critics and continuity report evidence; the Director decides; Chris breaks ties.
+5. **Intent comes from the top and evidence from the checks.** The Director and Creative Director write intent; QC, critics and continuity report evidence; the Director decides; Chris breaks ties.
 
 ## Models and effort
 
@@ -40,6 +40,7 @@ Companion to STUDIO_BIBLE.md (who does what) and ENGINEERING.md (the mechanics).
 | Look Development Artist | Artist | Sonnet 5.5 | medium |
 | Head of Fabrication | Head | Opus 5.5 | high |
 | Fabricator / Rigger | Artist | Sonnet 5.5 | medium |
+| Costume and Textile Artist | Artist | Sonnet 5.5 | high |
 | Supervising Animator | Head | Opus 5.5 | high |
 | Lead Animator | Lead | Opus 5.5 | high |
 | Senior Animator | Senior | Opus 5.5 | high |
@@ -74,9 +75,9 @@ Companion to STUDIO_BIBLE.md (who does what) and ENGINEERING.md (the mechanics).
 | Studio need | Claude Code feature | How it's used |
 |---|---|---|
 | A crew member | Subagent (`agents/<role>.md`) | Frontmatter: `model`, `effort`, `tools` (tool names only), `skills`, `memory`. Body: the role from the bible, written as instructions with reasons. |
-| Studio rules for everyone | The `studio-charter` skill, preloaded into every agent | Plugins can't ship a CLAUDE.md, so the charter (lines of communication, notes format, file rules, who can approve what) is a skill. The `make` skill also writes a short CLAUDE.md into each production repo. |
+| Studio rules for everyone | The `studio-charter` skill, preloaded into every agent | Plugins can't ship a CLAUDE.md, so the charter (lines of communication, notes format, file rules, who can approve what) is a skill, with copies of the studio docs in its `reference/` folder. The `make` skill also writes a short CLAUDE.md and `.claude/settings.json` into each production repo. |
 | Craft know-how | Skills (`skills/<craft>/SKILL.md` plus scripts) | Preloaded into the roles that use them; bundled files via `${CLAUDE_SKILL_DIR}`. |
-| The tracker | `bin/studio` in the plugin | On the Bash PATH while the plugin is enabled. The only way to change state (ENGINEERING.md section 4). |
+| The tracker and pipeline commands | `bin/studio` in the plugin | On the Bash PATH while the plugin is enabled. The only way to change state, and the way agents run renders, QC, post and judging (ENGINEERING.md section 4). |
 | Big parallel jobs | Saved workflows (`workflows/*.js`, run as `/clay-studio:<name>`) | Fan-outs keep raw output out of the Producer's context and are resumable within a session. |
 | A room that argues | Agent team (experimental, interactive only) or a workflow with adversarial review | Story room, design crit. |
 | Gates | Hooks plus the tracker CLI | ENGINEERING.md section 5. |
@@ -96,7 +97,7 @@ Companion to STUDIO_BIBLE.md (who does what) and ENGINEERING.md (the mechanics).
 | `boards` | Storyboard Artist, Head of Story | SVG symbol library, beat board, Blender board renders, panel JSON, board checks |
 | `animatic-and-edit` | Animatic Editor, Editor, Assistant Editor | ffmpeg and OTIO assembly, timing files, edit drafts, conform |
 | `world-bible` | Production Designer, Set and World Designer | World and material bible template, palette rules, originality check |
-| `character-build` | Character Designer, Head of Fabrication, Fabricator | Silhouettes, maquette, model sheet, code build recipe, mouth sets |
+| `character-build` | Character Designer, Head of Fabrication, Fabricator, Costume and Textile Artist | Silhouettes, maquette, model sheet, code build recipe, mouth sets, costumes |
 | `set-build` | Set and World Designer, Fabricator | Greybox, kit modules, dressing tiers, handmade pass, dress manifests |
 | `look-dev` | Look Dev Supervisor and Artist | Clay shader, fibers, other materials, boil, screen test, texture licensing |
 | `camera-and-light` | DP, Operator | Lens and aperture rules, breathing, miniature lighting, flicker policy |
@@ -116,7 +117,7 @@ Companion to STUDIO_BIBLE.md (who does what) and ENGINEERING.md (the mechanics).
 | `board-sequence` | Thumbnails, beat board, Blender boards and board checks for a sequence |
 | `screen-test` | Renders a batch of new materials on the screen-test scene and scores them |
 | `shoot-sequence` | For each ready shot: layout, pop-through, final, post, QC, in parallel up to the render budget |
-| `dailies` | For each shot pending review: critics and continuity, then a dailies page and a Director review |
+| `run-dailies` | For each shot pending review: critics and continuity, then a dailies page and a Director review (named to avoid clashing with the `dailies` skill) |
 | `tune` | One round of the R&D loop on the tuning shots (the prompt defines the full loop) |
 
 ## Production folder
@@ -142,7 +143,7 @@ Every spawn gets a packet from `studio packet <shot> <role>`: the folder and ver
 
 ## What stays human
 - Greenlight, budgets, and every gate and lock signature.
-- The blind A/B taste checks (Chris alone during the tune loop; Chris plus 3 to 5 others at Studio Bar and at a production's Look Lock and Final).
+- The blind A/B taste checks: Chris alone at tune-loop checkpoints and a production's Look Lock; 3 to 5 outside raters at Studio Bar and at a production's Final (GOLD_SET.md).
 - Final voices (human performers, or Chris), unless Chris approves licensed AI voices with disclosure.
 - Commissioning music.
-- Optional: live-action reference for hero shots, a real clay reference shoot, and a real material shoot.
+- The real clay gold shoot (strongly recommended, GOLD_SET.md). Optional: live-action reference for hero shots and a later material shoot.
