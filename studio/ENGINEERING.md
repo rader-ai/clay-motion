@@ -1,6 +1,6 @@
 # Engineering: repos, tools, gates and infrastructure
 
-Owner: the **Pipeline TD**. Claude Code facts checked against the docs on Oct 17, 2026 (plugins, subagents, hooks, workflows, /goal). Items marked [verify] weren't confirmed in the docs; test them in Phase 0.
+Owner: the **Pipeline TD**. Claude Code facts checked against the docs on Oct 17, 2026 (plugins, subagents, hooks, workflows, /goal), and the [verify] items re-checked in Phase 0 against Claude Code 2.1.302 docs (results in `studio/ENVIRONMENT.md`).
 
 ## 1. Repos, storage and licenses
 
@@ -29,7 +29,7 @@ clay-motion/
 ```
 Mechanics that matter:
 - Plugins can't ship a CLAUDE.md that loads as context, so the charter is a skill every agent preloads. Production repos don't contain the studio docs, so `studio-charter` carries copies in `reference/` and skills cite those paths.
-- `${CLAUDE_PLUGIN_ROOT}` and `${CLAUDE_PLUGIN_DATA}` are available to hooks and MCP config, not reliably to Bash. So pipeline scripts are `studio` subcommands (`studio render`, `studio qc`, `studio post`, `studio build-shot`, `studio judge`), and `bin/studio` finds `lib/` relative to its own location. Skill-specific helpers live in the skill and are referenced with `${CLAUDE_SKILL_DIR}`.
+- `${CLAUDE_PLUGIN_ROOT}` and `${CLAUDE_PLUGIN_DATA}` are available to hooks, MCP config and skill/agent Markdown bodies, and are documented as absent from Bash tool commands (checked Phase 0). So pipeline scripts are `studio` subcommands (`studio render`, `studio qc`, `studio post`, `studio build-shot`, `studio judge`), and `bin/studio` finds `lib/` relative to its own location. Skill-specific helpers live in the skill and are referenced with `${CLAUDE_SKILL_DIR}`.
 - Plugins don't ship permission rules, so `make` writes `.claude/settings.json` into each production repo with the deny rules in section 5.
 - A plugin with `bin/` installs only in Claude Code, not on claude.ai or Cowork.
 - While building, install the plugin from a local marketplace (a `marketplace.json` in this repo, added with `/plugin marketplace add`) so agents, skills and hooks actually load.
@@ -77,7 +77,8 @@ Creative retake rounds are counted from notes of type `creative` or `scope`, not
 | Handoff note | SubagentStop, command hook | Checks `handoff/<packet>.md` exists; if not, blocks the stop with a reason |
 | Session start | SessionStart | Verifies the pinned Blender environment, writes its path, runs the API smoke test |
 
-- Exit code 2 or `{"decision": "block"}` blocks. PostToolUse can't undo an action, so protection lives in PreToolUse.
+- PreToolUse blocks with exit code 2 or `hookSpecificOutput.permissionDecision: "deny"` plus `permissionDecisionReason` (top-level `decision: "block"` is for SubagentStop, Stop and others, not PreToolUse; checked Phase 0). PostToolUse can't undo an action, so protection lives in PreToolUse.
+- MCP matchers are unanchored regex on `mcp__<server>__<tool>`; plugin servers are `mcp__plugin_<plugin>_<server>__<tool>`. Use `mcp__.*__.*`.
 - Paid calls (the Gemini and OpenAI judges) go through `studio judge`, which does its own ledger checks, because a Bash hook can't tell a judge call from any other command.
 - `make` writes `permissions.deny` rules into each production's `.claude/settings.json` as a second layer behind the Bash hook.
 
@@ -86,12 +87,12 @@ Creative retake rounds are counted from notes of type `creative` or `scope`, not
 - Subagents can spawn subagents up to three layers deep by default. This studio uses two: the Producer spawns heads and crew; heads that need a reviewer or assistant get the `Agent` tool; crew don't.
 - The `tools` field takes tool names only. Use frontmatter to enforce the bible:
   - Critic Panel and Script Supervisor: `disallowedTools: Edit, Write` (they write only through `studio`).
-  - Director and Creative Director keep Edit and Write because `memory` needs them; a per-agent PreToolUse hook in their frontmatter limits those writes to their memory folder, and everything else goes through `studio`.
+  - Director and Creative Director keep Edit and Write because `memory` needs them. **Frontmatter `hooks` are ignored for plugin subagents** (checked Phase 0), so the limit lives in the plugin's `hooks/hooks.json`: a PreToolUse hook on `Edit|Write` reads the calling agent type from the hook input and denies writes outside its memory folder; everything else goes through `studio`.
   - Studio Critic: `tools: Read`, `omitClaudeMd: true`, and it receives only anonymized pairs and the rubric, so it stays blind.
   - Artists: `maxTurns` set so a stuck agent hands back instead of looping.
 - `memory: user` for the Director and Creative Director (persists across production repos).
-- Workflows are started by a typed `/clay-studio:<name>` or a request in a typed prompt. Whether the Producer can start one mid-loop on its own needs testing in Phase 0 [verify]; the fallback is spawning the same agents with the Agent tool. The kickoff prompt tells Claude not to start any workflow before Phase 1.
-- Also [verify] in Phase 0: auto mode naming and behavior, workflow resume, agent teams, scheduled tasks, and the Fable minimum version.
+- Workflows are started by a typed `/clay-studio:<name>`, a typed request ("use a workflow"), or with ultracode effort on. The docs don't say the Producer can launch a saved plugin workflow on its own mid-task (checked Phase 0), so the default for fan-outs the Producer starts itself is spawning the same agents with the Agent tool; Chris can type the workflow command when he wants the workflow version. The kickoff prompt tells Claude not to start any workflow before Phase 1.
+- Checked Phase 0: auto mode approves tool calls within a turn but doesn't start new turns (`/goal` does); workflow resume works from `/workflows` and by relaunching the same script; agent teams are experimental and off by default (`CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`), so the studio doesn't use them; Fable 5.1 needs Claude Code 2.1.257 or later (this machine has 2.1.292); default nesting is three layers (`CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH`).
 
 ## 7. Compute
 

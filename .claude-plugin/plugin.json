@@ -1,0 +1,7 @@
+{
+  "name": "clay-studio",
+  "version": "0.5.0",
+  "description": "An AI clay stop-motion studio: Claude agents as the crew, Blender driven from code as the stage.",
+  "author": { "name": "Chris Rader", "url": "https://github.com/rader-ai" },
+  "repository": "https://github.com/rader-ai/clay-motion"
+}

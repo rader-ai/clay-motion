@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+# studio: the tracker CLI and every pipeline command (ENGINEERING.md section 4).
+# Phase 0 stub: only `env` and `smoke` work. Finds lib/ relative to its own path.
+set -euo pipefail
+HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ROOT="$(cd "$HERE/.." && pwd)"
+ENV_FILE="${HOME}/.config/clay-studio/env"
+BPY_PY=""
+[[ -f "$ENV_FILE" ]] && BPY_PY="$(grep '^BPY_PYTHON=' "$ENV_FILE" | cut -d= -f2-)"
+cmd="${1:-help}"; shift || true
+case "$cmd" in
+  env)   echo "root=$ROOT"; echo "bpy_python=${BPY_PY:-<not set; run the SessionStart hook>}";;
+  smoke) [[ -x "$BPY_PY" ]] || { echo "pinned Blender env not found ($ENV_FILE)" >&2; exit 1; }
+         exec "$BPY_PY" "$ROOT/lib/blender/smoke.py" "$@";;
+  *)     echo "studio (Phase 0 stub). Commands: env, smoke. The rest arrive in Phase 4."; [[ "$cmd" == help ]] || exit 2;;
+esac

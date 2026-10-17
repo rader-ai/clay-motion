@@ -1,0 +1,14 @@
+{
+  "name": "clay-motion",
+  "owner": {
+    "name": "rader-ai"
+  },
+  "description": "Local marketplace for building the clay-studio plugin",
+  "plugins": [
+    {
+      "name": "clay-studio",
+      "source": "./",
+      "description": "AI clay stop-motion studio (in development)"
+    }
+  ]
+}
