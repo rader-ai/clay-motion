@@ -20,4 +20,17 @@ This file holds Chris's creative direction for the studio. The Creative Director
 3. **One fiber runs through it.** A literal recurring thread (for example undyed wool yarn) appears in every scene: in costumes, holding sets together, stitched into skies. It can also carry story.
 4. **Earth pigments only.** Every color comes from natural earth pigments (ochres, umbers, siennas, clay greens, charcoal, chalk, with one indigo or madder accent), so clay, cloth and wood share one palette.
 
-Working proposal until Chris decides: 2 and 4 become house rules for every production; 1 or 3 is chosen per production as its creative concept.
+## Decisions, Oct 17, 2026
+
+**Chris chose all four threads.** They stack as four layers, so every film carries all of them:
+
+| Layer | Rule | Level |
+|---|---|---|
+| Palette | Earth pigments only, with at most one accent per film | House rule, every production |
+| Process | The maker's hand shows in every material | House rule, every production |
+| World | Each film picks one place, and every material in it comes from that place | Rule is house-level; the place is chosen per production |
+| Motif | Each film picks one fiber that runs through every scene | Rule is house-level; the fiber is chosen per production |
+
+Open idea for Chris: a studio signature fiber (for example undyed natural wool) that appears somewhere in every film the studio makes, like a maker's mark.
+
+**Texture source: CC0 scans for now.** Use ambientCG and Poly Haven (both CC0), repainted or flattened so baked-in lighting doesn't read as photographic, with procedural detail at fine scales. A real material shoot can come later and replace these with owned captures.
