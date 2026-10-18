@@ -17,7 +17,7 @@ Owner: the Pipeline TD. Measured on this machine; re-measure if the machine or B
 | git LFS | **missing** (needed for `.blend` files; `brew install git-lfs`) |
 | uv | missing (not needed; plain venv works) |
 | Claude Code | 2.1.292 |
-| Vercel CLI | 54.21.0 (64.x is current), account `happyrader`, project `clay-motion` linked |
+| Vercel CLI | 54.21.0 (64.x is current), project `clay-motion` linked |
 
 ## Blender
 
