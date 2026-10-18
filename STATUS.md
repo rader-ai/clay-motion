@@ -1,6 +1,6 @@
 # Clay Studio status
 
-Updated: 2026-10-17. Producer: Claude (Opus 5.5).
+Updated: 2026-10-18. Producer: Claude (Opus 5.5).
 
 ## Phase
 
@@ -25,6 +25,7 @@ Updated: 2026-10-17. Producer: Claude (Opus 5.5).
 - Claude Code behaviors marked [verify] checked against the docs; ENGINEERING.md corrected (PreToolUse deny format, plugin agent hooks ignored, workflows not self-started).
 - Plugin skeleton: manifest, local marketplace, stub `bin/studio` (`env`, `smoke`), SessionStart hook. Validates, and installed as `clay-studio@clay-motion`. Still to confirm in a fresh session: the hook message and `studio` on PATH.
 - git LFS installed; `.blend` files tracked through LFS.
+- Character pipeline R&D (Chris's request): three approaches compared; design-first plus generated 3D won on look. Rigged and animated a walk-in, smile and wave on twos. Scripts in `tools/puppet/`, findings in `research/19`. Renders and generated meshes stay off the repo.
 - Judge pricing from AI Gateway's public price list (estimate, see ENVIRONMENT.md).
 
 ## Next
@@ -35,7 +36,7 @@ Updated: 2026-10-17. Producer: Claude (Opus 5.5).
 
 | Ledger | Cap | Spent |
 |---|---|---|
-| R&D | not set (waiting on Chris) | $0.00 |
+| R&D | not set (waiting on Chris) | about $3.76 (Higgsfield credits, character experiments) |
 | Pilot | not set (waiting on Chris) | $0.00 |
 
 Compute is local, so it costs nothing in dollars. Paid spend is judge API calls only.
