@@ -36,7 +36,7 @@ Updated: 2026-10-18. Producer: Claude (Opus 5.5).
 
 | Ledger | Cap | Spent |
 |---|---|---|
-| R&D | not set (waiting on Chris) | about $3.76 (Higgsfield credits, character experiments) |
+| R&D | not set (waiting on Chris) | about $5.15 (Higgsfield credits: character experiments and the README puppet) |
 | Pilot | not set (waiting on Chris) | $0.00 |
 
 Compute is local, so it costs nothing in dollars. Paid spend is judge API calls only.

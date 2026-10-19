@@ -44,7 +44,7 @@ Scores are the agents' own, checked against the renders by the Producer. One jud
 
 ## Spend
 
-About $3.76 in generation credits across the experiments and the revision (shared Higgsfield balance). No other paid calls.
+About $5.15 in generation credits (87 credits at worst-case $0.059): the experiments ($2.36), the revised figure ($1.39) and an original showcase puppet for the README ($1.39). Shared Higgsfield balance; no other paid calls.
 
 ## What a studio pipeline needs next
 

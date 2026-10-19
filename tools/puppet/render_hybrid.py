@@ -69,14 +69,14 @@ vcol = np.zeros((nv, 3)); np.add.at(vcol, lv, sample(luv)); vcnt = np.bincount(l
 vcol /= np.maximum(vcnt, 1)
 
 # ---- soft class probabilities from paint colour (sRGB prototypes), head only for hair/gloss
-protos = {"skin": (0.81, 0.57, 0.41), "grey": (0.64, 0.58, 0.54), "brown": (0.45, 0.32, 0.22), "brow": (0.30, 0.22, 0.17),
+protos = {"skin": (0.81, 0.57, 0.41), "grey": (0.64, 0.58, 0.54), "cream": (0.80, 0.74, 0.62), "brown": (0.45, 0.32, 0.22), "brow": (0.30, 0.22, 0.17),
           "white": (0.92, 0.90, 0.86), "iris": (0.35, 0.50, 0.70), "dark": (0.05, 0.05, 0.06)}
 ks = list(protos); Pm = np.array([protos[k] for k in ks])
 d2 = ((vcol[:, None, :] - Pm[None]) ** 2).sum(-1)
 prob = np.exp(-d2 / (2 * 0.06 ** 2)); prob /= prob.sum(1, keepdims=True)
 z = co[:, 2]
 head = np.clip((z - (-0.004)) / 0.006, 0, 1)                    # soft: 0 below the neck base, 1 above
-hair = (prob[:, ks.index("grey")] + prob[:, ks.index("brown")] + prob[:, ks.index("brow")]) * head
+hair = (prob[:, ks.index("grey")] + prob[:, ks.index("cream")] + prob[:, ks.index("brown")] + prob[:, ks.index("brow")]) * head   # cream: yarn and pale hair are matte
 skin = prob[:, ks.index("skin")]
 gloss = (prob[:, ks.index("white")] + prob[:, ks.index("iris")] + prob[:, ks.index("dark")]) * head
 # smooth the masks across the surface so borders feather instead of speckling

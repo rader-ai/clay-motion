@@ -1,7 +1,10 @@
-"""Rig a generated puppet mesh and animate a walk-in, a smile and a wave, on twos.
-   GLB=path/to/figure.glb <bpy-python> walk.py outdir [preview|dailies] [posetest|anim] [t_for_posetest]
+"""Rig a generated puppet mesh and animate a walk-in, a smile and a wave, on twos (anim),
+or a seamless 2-second wave loop (loop).
+   GLB=path/to/figure.glb [JOINTS=joints.json] <bpy-python> walk.py outdir [preview|dailies] [posetest|anim|loop]
+JOINTS overrides the measured joint positions for a new figure: {"neck_frac": 0.8, "side_limit": [[z...], [x...]],
+"joints": {"upperarm.L": [x, y, z], ...}}; missing joints keep the defaults (measured on the first figure).
 Body skeleton with leg IK (feet planted, knees reach), a smile shape key, wool fibers on the head bone."""
-import math, os, random, sys
+import json, math, os, random, sys
 import numpy as np
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -12,7 +15,8 @@ mode = sys.argv[3] if len(sys.argv) > 3 else "posetest"
 t_test = float(sys.argv[4]) if len(sys.argv) > 4 else 0.25
 
 src = open(os.path.join(EXP1, "render_hybrid.py")).read().split("P.set_and_light(sc, shot, q)")[0]
-sys.argv = ["render_hybrid.py", os.environ["GLB"], "unused.png", q, "full", "0.80", "-90", "1"]
+CFG = json.load(open(os.environ["JOINTS"])) if os.environ.get("JOINTS") else {}
+sys.argv = ["render_hybrid.py", os.environ["GLB"], "unused.png", q, "full", str(CFG.get("neck_frac", 0.80)), "-90", os.environ.get("FIBERS", "1")]
 G = {"__name__": "hybrid", "__file__": os.path.join(EXP1, "render_hybrid.py")}
 exec(compile(src, "render_hybrid.py", "exec"), G)
 import bpy
@@ -28,6 +32,8 @@ for s, sx in (("L", -1), ("R", 1)):
           f"forearm.{s}": (sx * 0.061, 0.008, -0.072), f"hand.{s}": (sx * 0.067, 0.002, -0.110), f"hand_end.{s}": (sx * 0.073, -0.004, -0.150),
           f"thigh.{s}": (sx * 0.022, 0.005, -0.128), f"shin.{s}": (sx * 0.026, 0.002, -0.181), f"foot.{s}": (sx * 0.027, 0.009, FLOOR + 0.012),
           f"toe.{s}": (sx * 0.028, -0.026, FLOOR + 0.002), f"pole.{s}": (sx * 0.026, -0.12, -0.181)}
+for k_, v_ in CFG.get("joints", {}).items():
+    J[k_] = tuple(v_)
 DEFORM = [("pelvis", "root", "spine", "base"), ("spine", "spine", "chest", "pelvis"), ("chest", "chest", "neck", "spine"),
           ("neck", "neck", "head", "chest"), ("head", "head", "head_end", "neck")]
 for s in ("L", "R"):
@@ -79,7 +85,8 @@ for i, (name, h, t, _) in enumerate(DEFORM):
     a, b = np.array(J[h]), np.array(J[t]); ab = b - a
     tt = np.clip(((co - a) @ ab) / (ab @ ab), 0, 1)
     D[:, i] = np.linalg.norm(co - (a + tt[:, None] * ab), axis=1)
-side_limit = np.interp(z, [-0.155, -0.085, -0.065, -0.035, -0.014], [0.060, 0.050, 0.052, 0.046, 0.040])
+SL = CFG.get("side_limit", [[-0.155, -0.085, -0.065, -0.035, -0.014], [0.060, 0.050, 0.052, 0.046, 0.040]])
+side_limit = np.interp(z, SL[0], SL[1])
 arm_zone = (np.abs(x) > side_limit) & (z < -0.014) & (z > -0.16)
 leg_zone = z < -0.140
 allow = np.ones_like(D, dtype=bool)
@@ -217,6 +224,26 @@ def pose(t, rng=None, jit=0.0):
     # smile: soft while walking, grows into a full grin when he stops
     fig.data.shape_keys.key_blocks["smile"].value = -0.6 + 1.6 * ease(2.7, 3.4, t)
 
+def pose_loop(t, period=2.0):
+    """Seamless loop: the waving arm stays up, two waves per period, gentle sway and head tilt."""
+    w = 2 * math.pi * t / period
+    for pb in arm.pose.bones:
+        pb.rotation_mode = "QUATERNION"; pb.rotation_quaternion = Quaternion(); pb.location = (0, 0, 0)
+    set_loc("base", (0, 0, 0.0008 * math.sin(2 * w)))
+    set_rot("pelvis", axis_rot((0, 1, 0), 1.5 * math.sin(w)))
+    set_rot("spine", axis_rot((0, 1, 0), -1.0 * math.sin(w)) @ axis_rot((0, 0, 1), 3.0))
+    set_rot("chest", axis_rot((0, 0, 1), 4.0) @ axis_rot((0, 1, 0), -2.0 + 0.8 * math.sin(w + 0.6)))
+    set_rot("head", axis_rot((0, 1, 0), 7.0 + 3.0 * math.sin(w + 1.0)) @ axis_rot((0, 0, 1), 8.0) @ axis_rot((1, 0, 0), -3.0 + 1.5 * math.sin(2 * w + 0.4)))
+    rL = aim("upperarm.L", (-0.25, 0.05, -1.0)); set_rot("upperarm.L", axis_rot((1, 0, 0), 2.0 * math.sin(w)) @ rL)
+    set_rot("forearm.L", aim("forearm.L", (-0.12, -0.25, -1.0), rL))
+    rU = aim("upperarm.R", (0.42, -0.30, -0.86)); set_rot("upperarm.R", rU)
+    wave = math.sin(2 * w)
+    rF = aim("forearm.R", (0.30, -0.80, 0.50), rU)
+    set_rot("forearm.R", axis_rot(rU.inverted() @ Vector((0, -1, 0)), 25 * wave) @ rF)
+    set_rot("hand.R", axis_rot((0, -1, 0), 12 * math.sin(2 * w - 0.5)))
+    set_rot("shoulder.R", axis_rot((0, 1, 0), -8))
+    fig.data.shape_keys.key_blocks["smile"].value = 0.0
+
 def key(f):
     for pb in arm.pose.bones:
         pb.keyframe_insert("rotation_quaternion", frame=f); pb.keyframe_insert("location", frame=f)
@@ -248,6 +275,17 @@ if mode == "posetest":
         pose(tt); bpy.context.view_layer.update(); focus_on_head()
         sc.render.filepath = os.path.join(outdir, f"pose_{tt:.1f}.png"); bpy.ops.render.render(write_still=True)
         print(f"RENDERED pose {tt}", flush=True)
+elif mode == "loop":
+    fps = 24; nposes = 24; rng = random.Random(3)
+    cam.location = Vector(cam.location) + Vector((0.0, 0.03, -0.004))
+    for i in range(nposes):
+        pose_loop(i / nposes * 2.0); bpy.context.view_layer.update(); focus_on_head()
+        for L in [o for o in sc.objects if o.type == "LIGHT"]:
+            base = L.get("base_energy") or L.data.energy; L["base_energy"] = base
+            L.data.energy = base * rng.uniform(0.985, 1.015)
+        sc.render.filepath = os.path.join(outdir, f"p{i:03d}.png"); bpy.ops.render.render(write_still=True)
+        print(f"POSE {i}", flush=True)
+    print("RENDERED loop")
 else:
     fps = 24; nframes = int(fps * T_TOTAL); rng = random.Random(7)
     for f in range(1, nframes + 1, 2):

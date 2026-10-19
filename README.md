@@ -1,5 +1,10 @@
 # Clay Studio
 
+<p align="center">
+  <img src="docs/media/hero.gif" width="360" alt="An original puppet, a village potter in a knitted wool cardigan and clay-dusted apron, waving">
+</p>
+<p align="center"><em>An original test puppet. Designed with an image model, sculpted by image-to-3D, then dressed in the studio's materials, rigged and animated on twos in Blender, all from code.</em></p>
+
 **A stop-motion studio you run from Claude Code.** Claude agents are the crew: director, animators, look development, sound, QC. Blender is the stage, driven entirely from code. You are the executive producer, and nothing locks without your sign-off.
 
 This isn't a video generator. Every frame is a real 3D scene with real puppets, real lights and a real camera, so you can re-pose, relight, re-time and re-render any shot. The handmade feel is built in on purpose: poses held on twos, wool fibers you can see, surfaces that "boil" between frames, a set that breathes.
